@@ -1,0 +1,35 @@
+{
+  "name": "nativescript-websockets",
+  "version": "1.0.0",
+  "description": "A WebSocket NativeScript module for Android",
+  "main": "websockets.js",
+  "nativescript": {
+	"platforms": {
+		"android": "0.0.1",
+        "ios": "0.0.1"
+	}
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanaela/nativescript-websockets.git"
+  },
+  "keywords": [
+    "NativeScript", "WebSockets", "Development", "JavaScript", "Android", "iOS", "Sockets", "Websocket"
+  ],
+  "author": {
+    "name": "Nathanael Anderson",
+    "email": "nathan@master-technology.com"
+  },
+  "bugs": {
+    "url": "https://github.com/nathanaela/nativescript-websockets/issues"
+  },
+  "license": {
+    "type": "MIXED",
+    "url": "https://github.com/nathanaela/nativescript-sqlite/blob/master/LICENSE"
+  },
+  "homepage": "https://github.com/nathanaela/nativescript-websockets",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "postinstall": "node support/postinstall.js"
+  }
+}
