@@ -27,14 +27,15 @@ Please upgrade to v1.1.3 or later - You can use NPM to upgrade to the latest ver
 * Click the **+** button, then type "Security" in the filter and double click on the "Security.Framework" to add it to your project.
 * Click the **+** button, then type "CFNetwork" in the filter and double click on the "CFNetwork.Framework" to add it to your project.
 * Click the **+** button, then type "System" in the filter and double click on the "LibSystem.dylib" to add it to your project.
-* Click the **+** button, then click the "Other" button, then double click on the "PocketSocket" folder, and double click on the "libPocketSocket.a" file.
+* Click the **+** button, then click the "Other" button, then double click parent directory and then on the "PocketSocket" folder, and double click on the "libPocketSocket.a" file.
 * Save your project and exit XCode.
 
 This should only be needed this first time, and currently unfortunately anytime you install new runtimes as the project file gets replaced.  Hopefully NativeScript in the future will have the plugins support added which will make this automatic.
 
 ## Limitations
-* Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works.  
-* ArrayBuffers crash on the Android Runtime so Binary transfers are actually converted to a normal JS Array instead, once ArrayBuffers work we will switch so that Binary messages are ArrayBuffers 
+* The sending of Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works.
+* ArrayBuffers crash on the Android Runtime so Binary transfers are actually converted to a normal JS Array instead, once ArrayBuffers work we will switch so that Binary messages are ArrayBuffers
+* if you are on iOS runtimes before v1.2.2 then doing the require('nativescript-websockets') will crash with a really weird error.  This is a bug in the Runtime, and can be worked around see the https://github.com/Nathanaela/nativescript-websockets/issues/1 issue.   
 
 ## Usage 
 

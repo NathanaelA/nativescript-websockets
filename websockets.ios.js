@@ -118,6 +118,11 @@ NativeWebSockets.prototype._reCreate = function() {
 
     //noinspection JSUnresolvedFunction
     this._socket = PSWebSocket.clientSocketWithRequest(urlRequest);
+    if (this._protocols.length) {
+		this._socket.protocol = this._protocols.join(" ");
+    }
+
+
     this._socket.delegate = this._socketWrapper;
 };
 
@@ -341,7 +346,7 @@ NativeWebSockets.prototype._send = function(message) {
  */
 NativeWebSockets.prototype.state = function() {
     if (!this._hasOpened) {
-        return NativeWebSockets.NOT_YET_CONNECTED;
+        return this.NOT_YET_CONNECTED;
     }
     return (this._socket.readyState);
 };
@@ -351,7 +356,7 @@ NativeWebSockets.prototype.state = function() {
  * @returns {boolean} - true if the connection is open
  */
 NativeWebSockets.prototype.isOpen = function() {
-    return this._socket.readyState === NativeWebSockets.OPEN;
+    return this._socket.readyState === this.OPEN;
 };
 
 /**
@@ -359,7 +364,7 @@ NativeWebSockets.prototype.isOpen = function() {
  * @returns {boolean} - true if the connection is closed
  */
 NativeWebSockets.prototype.isClosed = function() {
-    return this._socket.readyState === NativeWebSockets.CLOSED;
+    return this._socket.readyState === this.CLOSED;
 };
 
 /**
@@ -367,7 +372,7 @@ NativeWebSockets.prototype.isClosed = function() {
  * @returns {boolean} - true if closing
  */
 NativeWebSockets.prototype.isClosing = function() {
-    return this._socket.readyState === NativeWebSockets.CLOSING;
+    return this._socket.readyState === this.CLOSING;
 };
 
 /**
@@ -375,7 +380,7 @@ NativeWebSockets.prototype.isClosing = function() {
  * @returns {boolean} - true if connecting
  */
 NativeWebSockets.prototype.isConnecting = function() {
-    return this._socket.readyState === NativeWebSockets.CONNECTING;
+    return this._socket.readyState === this.CONNECTING;
 };
 
 /**
@@ -474,23 +479,26 @@ NativeWebSockets.prototype.NOT_YET_CONNECTED = -1;
  * @type {number}
  */
 NativeWebSockets.prototype.CONNECTING =  0;
+NativeWebSockets.CONNECTION = 0;
 
 /**
  * This is the OPEN value
  * @type {number}
  */
 NativeWebSockets.prototype.OPEN = 1;
+NativeWebSockets.OPEN = 1;
 
 /**
  * This is the CLOSING value
  * @type {number}
  */
 NativeWebSockets.prototype.CLOSING = 2;
-
+NativeWebSockets.CLOSING = 2;
 /**
  * This is the CLOSED value
  * @type {number}
  */
 NativeWebSockets.prototype.CLOSED = 3;
+NativeWebSockets.CLOSED = 3;
 
 module.exports = NativeWebSockets;
