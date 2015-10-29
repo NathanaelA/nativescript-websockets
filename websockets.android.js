@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.0.1                                             Nathan@master-technology.com
+ * Version 0.0.2                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -104,7 +104,7 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
  */
 var NativeWebSockets = function(url, options) {
     options = options || {};
-    this._callbacks = {open: [], close: [], message: [], error: []};
+    this._callbacks = {open: [], close: [], message: [], error: [], fragment: [], handshake: []};
     this._hasOpened = false;
     this._queue = [];
     this._queueRunner = null;
@@ -361,7 +361,7 @@ NativeWebSockets.prototype.send = function(message) {
  * @private
  */
 NativeWebSockets.prototype._startQueueRunner = function() {
-    if (!this._queueRunner && this._socket.state() !== this.OPEN && this._queue.length) {
+    if (!this._queueRunner && this.state() !== this.OPEN && this._queue.length) {
         var self = this;
         this._queueRunner = setTimeout(function() {
             self._queueRunner = null;

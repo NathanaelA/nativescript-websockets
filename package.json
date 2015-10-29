@@ -1,11 +1,11 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets.js",
   "nativescript": {
 	"platforms": {
-		"android": "0.0.1",
+		"android": "0.0.2",
         "ios": "0.0.1"
 	}
   },
