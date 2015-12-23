@@ -1,11 +1,11 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets.js",
   "nativescript": {
 	"platforms": {
-		"android": "0.0.2",
+		"android": "0.0.3",
         "ios": "0.0.1"
 	}
   },
@@ -28,8 +28,5 @@
     "url": "https://github.com/nathanaela/nativescript-sqlite/blob/master/LICENSE"
   },
   "homepage": "https://github.com/nathanaela/nativescript-websockets",
-  "readmeFilename": "README.md",
-  "scripts": {
-    "postinstall": "node support/postinstall.js"
-  }
+  "readmeFilename": "README.md"
 }

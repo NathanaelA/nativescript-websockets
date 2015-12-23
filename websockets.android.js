@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.0.2                                             Nathan@master-technology.com
+ * Version 0.0.3                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -67,16 +67,14 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
 
             // Convert Binary Message into ArrayBuffer/Uint8Array
             //noinspection JSUnresolvedFunction
-            var count = binaryMessage.limit();
-            // TODO: Once ArrayBuffer works, switch this to a Uint8Array
-            var view = new Array(count);  // Uint8Array(count);
+            var count = binaryMessage.limit();            
+            var view = new Uint8Array(count); 
             for (var i=0;i<count;i++) {
                 view[i] = binaryMessage.get(i);
             }
             binaryMessage = null;
-
-            // TODO: Once ArrayBuffer Works, change this to "view.buffer" as the second parameter
-            this.wrapper._notify("message", [this.wrapper, view]); }
+            
+            this.wrapper._notify("message", [this.wrapper, view.buffer]); }
     },
     onError: function (err) {
         if (this.wrapper) {
@@ -157,13 +155,18 @@ NativeWebSockets.prototype._reCreate = function() {
 
     // Check for SSL/TLS
     if (this._url.indexOf("wss:") === 0) {
-        //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+		this._socket.setupSSL();
+		// This below code is currently broken in NativeScript; so we had to embed the SSL code in the Websocket library.
+		// TODO: Re-enable this once it is fixed in NativeScript so that the end user can actually setup the specific
+		// SSL connection he wants...
+		
+        /* //noinspection JSUnresolvedFunction,JSUnresolvedVariable
         var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
         sslContext.init( null, null, null );
         //noinspection JSUnresolvedFunction
         var socketFactory = sslContext.getSocketFactory();
         //noinspection JSUnresolvedFunction
-        this._socket.setSocket( socketFactory.createSocket() );
+        this._socket.setSocket( socketFactory.createSocket() ); */
     }
 };
 

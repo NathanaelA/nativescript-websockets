@@ -1,6 +1,0 @@
-module libPocketSocket {
-    umbrella "PocketSocket"
-    explicit module * {
-        export *
-    }
-}
