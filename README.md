@@ -12,30 +12,12 @@ I do contract work; so if you have a module you want built for NativeScript (or 
   
 First run `tns --version`
 
-### v1.1.3 or later
+### v1.4 or later
 
 Run `tns plugin add nativescript-websockets` in your ROOT directory of your project.
 
-### v1.1.2 and earlier
-
-Please upgrade to v1.1.3 or later - You can use NPM to upgrade to the latest version by doing a `npm install nativescript -g`.
- 
-## Extra Installation on IOS
-
-* You will need to Double-Click on the \<projname>.xcodeproj file in the /platforms/ios/ folder.
-* Scroll to the bottom of the Targets \<ProjName > -> General window until you find the "Linked Frameworks and Libraries" section
-* Click the **+** button, then type "Security" in the filter and double click on the "Security.Framework" to add it to your project.
-* Click the **+** button, then type "CFNetwork" in the filter and double click on the "CFNetwork.Framework" to add it to your project.
-* Click the **+** button, then type "System" in the filter and double click on the "LibSystem.dylib" to add it to your project.
-* Click the **+** button, then click the "Other" button, then double click parent directory and then on the "PocketSocket" folder, and double click on the "libPocketSocket.a" file.
-* Save your project and exit XCode.
-
-This should only be needed this first time, and currently unfortunately anytime you install new runtimes as the project file gets replaced.  Hopefully NativeScript in the future will have the plugins support added which will make this automatic.
-
 ## Limitations
-* The sending of Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works.
-* ArrayBuffers crash on the Android Runtime so Binary transfers are actually converted to a normal JS Array instead, once ArrayBuffers work we will switch so that Binary messages are ArrayBuffers
-* if you are on iOS runtimes before v1.2.2 then doing the require('nativescript-websockets') will crash with a really weird error.  This is a bug in the Runtime, and can be worked around see the https://github.com/Nathanaela/nativescript-websockets/issues/1 issue.   
+* The sending of Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works..
 
 ## Usage 
 
@@ -45,22 +27,24 @@ There is two possible interfaces for you to use; the Simple WebSocket interface 
 ```js
 require('nativescript-websockets');
 
-var mySocket = new WebSockets("ws://192.168.0.1:3000", ["protocol","another protocol"]);
-MySocket.addEventListener('open', function (evt) { console.log("We are Open"); evt.target.send("Hello"); });
-MySocket.addEventListener('message', function(evt) { console.log("We got a message: ", evt.data); evt.target.close(); });
-MySocket.addEventListener('close', function(evt) { console.log("The Socket was Closed:", evt.code, evt.reason);
-MySocket.addEventListener('error', function(evt) { console.log(("The socket had an error", evt.error); });
+var mySocket = new WebSocket("ws://echo.websocket.org", [ /* "protocol","another protocol" */]);
+mySocket.addEventListener('open', function (evt) { console.log("We are Open"); evt.target.send("Hello"); });
+mySocket.addEventListener('message', function(evt) { console.log("We got a message: ", evt.data); evt.target.close(); });
+mySocket.addEventListener('close', function(evt) { console.log("The Socket was Closed:", evt.code, evt.reason); });
+mySocket.addEventListener('error', function(evt) { console.log("The socket had an error", evt.error); });
+
 ```
 
 ### Advanced Interface
 ```js
 var WS = require('nativescript-websockets');
 
-var mySocket = new WS("ws://192.168.0.1:3000",{protocols: ['chat', 'video'], timeout: 6000, allowCellular: true});
+var mySocket = new WS("ws://echo.websocket.org",{protocols: [/* 'chat', 'video' */], timeout: 6000, allowCellular: true});
 mySocket.on('open', function(socket) { console.log("Hey I'm open); socket.send("Hello"); });
 mySocket.on('message', function(socket, message) { console.log("Got a message", message); });
 mySocket.on('close', function(socket, code, reason) { console.log("Socket was closed because: ", reason, " code: ", code); });
 MySocket.on('error', function(socket, error) { console.log("Socket had an error", error);});
+
 ```
 
 ### Browser Based WebSockets
