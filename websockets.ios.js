@@ -92,6 +92,8 @@ var NativeWebSockets = function(url, options) {
     //noinspection JSUnresolvedVariable
     this._allowCell = (options.allowCellular !== false);
 
+    this._headers = options.headers || [];
+
     this._reCreate()
 };
 
@@ -107,6 +109,12 @@ NativeWebSockets.prototype._reCreate = function() {
     if (this._protocols.length) {
         //noinspection JSUnresolvedFunction
         urlRequest.addValueForHTTPHeaderField(this._protocols.join(" "), "Sec-WebSocket-Protocol");
+    }
+    for (var name in this._headers) {
+        if (!this._headers.hasOwnProperty(name)) continue;
+        var value = this._headers[name];
+        //noinspection JSUnresolvedFunction
+        urlRequest.addValueForHTTPHeaderField(value, name);
     }
     if (this._timeout !== -1) {
         urlRequest.timeoutInterval = this._timeout;

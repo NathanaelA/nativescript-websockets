@@ -39,7 +39,7 @@ mySocket.addEventListener('error', function(evt) { console.log("The socket had a
 ```js
 var WS = require('nativescript-websockets');
 
-var mySocket = new WS("ws://echo.websocket.org",{protocols: [/* 'chat', 'video' */], timeout: 6000, allowCellular: true});
+var mySocket = new WS("ws://echo.websocket.org",{protocols: [/* 'chat', 'video' */], timeout: 6000, allowCellular: true, headers: { 'Authorization': 'Basic ...' }});
 mySocket.on('open', function(socket) { console.log("Hey I'm open"); socket.send("Hello"); });
 mySocket.on('message', function(socket, message) { console.log("Got a message", message); });
 mySocket.on('close', function(socket, code, reason) { console.log("Socket was closed because: ", reason, " code: ", code); });
