@@ -1,12 +1,12 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets.js",
   "nativescript": {
 	"platforms": {
-		"android": "0.0.3",
-        "ios": "0.0.1"
+		"android": "1.4.0",
+        "ios": "1.4.0"
 	}
   },
   "repository": {
@@ -20,6 +20,13 @@
     "name": "Nathanael Anderson",
     "email": "nathan@master-technology.com"
   },
+  "contributors": [
+    {
+      "name": "Aleksey Gureiev",
+      "email": "spyromus@noizeramp.com",
+      "url": "https://github.com/alg"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/nathanaela/nativescript-websockets/issues"
   },

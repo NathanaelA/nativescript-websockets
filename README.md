@@ -4,7 +4,7 @@ This is a cross platform WebSocket library for IOS and Android.
 
 ## License
 
-My code is (c)2015, Master Technology.  All my code is LICENSED under the MIT Licesnse. Any other libraries used may have different licenses; which you may view them by reading the "LICENSE" file.  
+My code is (c)2015-2016, Master Technology.  All my code is LICENSED under the MIT Licesnse. Any other libraries used may have different licenses; which you may view them by reading the "LICENSE" file.
 
 I do contract work; so if you have a module you want built for NativeScript (or pretty much any other language) feel free to contact me (nathan@master-technology.com).
 
@@ -43,7 +43,7 @@ var mySocket = new WS("ws://echo.websocket.org",{protocols: [/* 'chat', 'video' 
 mySocket.on('open', function(socket) { console.log("Hey I'm open"); socket.send("Hello"); });
 mySocket.on('message', function(socket, message) { console.log("Got a message", message); });
 mySocket.on('close', function(socket, code, reason) { console.log("Socket was closed because: ", reason, " code: ", code); });
-MySocket.on('error', function(socket, error) { console.log("Socket had an error", error);});
+mySocket.on('error', function(socket, error) { console.log("Socket had an error", error);});
 
 ```
 
