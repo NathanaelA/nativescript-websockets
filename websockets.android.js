@@ -35,6 +35,39 @@ if (checkForEmulator()) {
     java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
 }
 
+var toHashMap = function(obj) {
+    var map = new java.util.HashMap();
+
+    for (var property in obj) {
+        if (!obj.hasOwnProperty(property) || obj[property] === null) continue;
+
+        var val = obj[property];
+        switch (typeof val) {
+            case 'object':
+                map.put(property, toHashMap(val, map));
+                break;
+
+            case 'boolean':
+                map.put(property, java.lang.Boolean.valueOf(String(val)));
+                break;
+
+            case 'number':
+                if (Number(val) === val && val % 1 === 0) {
+                    map.put(property, java.lang.Long.valueOf(String(val)));
+                } else {
+                    map.put(property, java.lang.Double.valueOf(String(val)));
+                }
+                break;
+
+            case 'string':
+                map.put(property, String(val));
+                break;
+        }
+    }
+
+    return map;
+}
+
 //noinspection JSUnresolvedVariable
 /**
  * This is our extended class that gets the messages back from the Native ANDROID class
@@ -67,13 +100,13 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
 
             // Convert Binary Message into ArrayBuffer/Uint8Array
             //noinspection JSUnresolvedFunction
-            var count = binaryMessage.limit();            
-            var view = new Uint8Array(count); 
+            var count = binaryMessage.limit();
+            var view = new Uint8Array(count);
             for (var i=0;i<count;i++) {
                 view[i] = binaryMessage.get(i);
             }
             binaryMessage = null;
-            
+
             this.wrapper._notify("message", [this.wrapper, view.buffer]); }
     },
     onError: function (err) {
@@ -119,6 +152,8 @@ var NativeWebSockets = function(url, options) {
 
     this._timeout = options.timeout || 10000;
 
+    this._headers = options.headers || [];
+
     this._reCreate();
 };
 
@@ -132,7 +167,7 @@ NativeWebSockets.prototype._reCreate = function() {
     var uri = new java.net.URI(this._url);
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), this._timeout);
+    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), toHashMap(this._headers), this._timeout);
 
     //noinspection JSValidateTypes
     this._socket.wrapper = this;
@@ -159,7 +194,7 @@ NativeWebSockets.prototype._reCreate = function() {
 		// This below code is currently broken in NativeScript; so we had to embed the SSL code in the Websocket library.
 		// TODO: Re-enable this once it is fixed in NativeScript so that the end user can actually setup the specific
 		// SSL connection he wants...
-		
+
         /* //noinspection JSUnresolvedFunction,JSUnresolvedVariable
         var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
         sslContext.init( null, null, null );
