@@ -1,6 +1,6 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets.js",
   "nativescript": {
@@ -25,6 +25,11 @@
       "name": "Aleksey Gureiev",
       "email": "spyromus@noizeramp.com",
       "url": "https://github.com/alg"
+    },
+    {
+      "name": "Choi Won",
+      "email": "help@myso.kr",
+      "url": "https://github.com/myso-kr"
     }
   ],
   "bugs": {
