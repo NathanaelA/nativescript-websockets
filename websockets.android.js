@@ -109,6 +109,9 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
 
             this.wrapper._notify("message", [this.wrapper, view.buffer]); }
     },
+    onPong: function(){
+
+    },
     onError: function (err) {
         if (this.wrapper) {
             this.wrapper._notify("error", [this.wrapper, err]);
