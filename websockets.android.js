@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.0.3                                             Nathan@master-technology.com
+ * Version 0.0.4                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -123,7 +123,6 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
         }
     },
     onWebsocketHandshakeReceivedAsClient: function (handshake) {
-        console.log(handshake);
         if (this.wrapper) {
             this.wrapper._notify("handshake", [this.wrapper, handshake]);
         }
