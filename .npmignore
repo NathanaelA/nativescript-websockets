@@ -3,3 +3,4 @@ demo/
 support/
 *.tar
 *.tgz
+.npmignore
