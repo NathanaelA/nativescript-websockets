@@ -1,6 +1,6 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets.js",
   "nativescript": {
@@ -36,7 +36,7 @@
     "url": "https://github.com/nathanaela/nativescript-websockets/issues"
   },
   "license": {
-    "type": "MIXED",
+    "type": "MIT & Apache 2.0",
     "url": "https://github.com/nathanaela/nativescript-sqlite/blob/master/LICENSE"
   },
   "homepage": "https://github.com/nathanaela/nativescript-websockets",
