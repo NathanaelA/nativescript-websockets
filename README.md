@@ -11,7 +11,7 @@ This is a cross platform WebSocket library for IOS and Android.
 ## License
 My code is (c)2015-2016, Master Technology.  All my code is LICENSED under the MIT License. The Android Library is also MIT, the iOS libraries used Apache 2.0; which you may view them by reading the "LICENSE" file.
 
-I do contract work; so if you have a module you want built for NativeScript (or any other projects) feel free to contact me (nathan@master-technology.com).
+I also do contract work; so if you have a module you want built for NativeScript (or any other software projects) feel free to contact me [nathan@master-technology.com](mailto://nathan@master-technology.com).
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=HN8DDMWVGBNQL&lc=US&item_name=Nathanael%20Anderson&item_number=nativescript%2dwebsockets&no_note=1&no_shipping=1&currency_code=USD&bn=PP%2dDonationsBF%3ax%3aNonHosted)
 [![Patreon](https://img.shields.io/badge/Pledge-Patreon-brightgreen.svg)](https://www.patreon.com/NathanaelA)
