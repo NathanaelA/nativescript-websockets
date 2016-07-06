@@ -5,12 +5,12 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.0.4                                             Nathan@master-technology.com
+ * Version 0.1.0                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
-/* jshint node: true, browser: true, unused: true, undef: false */
-/* global android, java, javax, org, require, module */
+/* jshint node: true, browser: true, unused: false, undef: false, camelcase: false, bitwise: false */
+/* global android, java, org, require, module */
 
 // --------------------------------------------
 
@@ -39,7 +39,8 @@ var toHashMap = function(obj) {
     var map = new java.util.HashMap();
 
     for (var property in obj) {
-        if (!obj.hasOwnProperty(property) || obj[property] === null) continue;
+        if (!obj.hasOwnProperty) continue;
+        if (obj[property] === null) continue;
 
         var val = obj[property];
         switch (typeof val) {
@@ -66,7 +67,7 @@ var toHashMap = function(obj) {
     }
 
     return map;
-}
+};
 
 //noinspection JSUnresolvedVariable
 /**
@@ -75,6 +76,7 @@ var toHashMap = function(obj) {
  * We also use this class to try and standardize the messages
  */
 var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
+    fragmentInfo: {type: 0, data: [], sizes: 0},
     wrapper: null,
     onOpen: function () {
         if (this.wrapper) {
@@ -118,6 +120,53 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
         }
     },
     onFragment: function (fragment) {
+        var optCode = fragment.optcode.toString();
+        if (optCode !== "CONTINUOUS") {
+            if (this.fragmentInfo.type !== 0) {
+                console.log("Missing Fragment info, skipped fragment");
+            }
+            // Reset our buffer size when we have a new fragment chain
+            this.fragmentInfo.sizes = 0;
+            if (optCode === "TEXT") {
+                this.fragmentInfo.type = 1;
+            } else if (optCode === "BINARY") {
+                this.fragmentInfo.type = 2;
+            } else {
+                console.log("Unknown Fragment code: ", optCode);
+                this.fragmentInfo.type = 0;
+            }
+        }
+
+        var data = fragment.getPayloadData();
+        this.fragmentInfo.sizes += data.limit();
+        this.fragmentInfo.data.push(data);
+        if (fragment.fin === true) {
+            var view = new Uint8Array(this.fragmentInfo.sizes);
+            for (var i = 0, dst = 0; i < this.fragmentInfo.data.length; i++) {
+                data = this.fragmentInfo.data[i];
+                var count = data.limit();
+                for (var src = 0; src < count; src++, dst++) {
+                    view[dst] = data.get(src);
+                }
+            }
+            data = null;
+            this.fragmentInfo.data = [];
+
+            if (this.wrapper) {
+                // Do our final message callback
+                if (this.fragmentInfo.type === 2) {
+                    this.wrapper._notify("message", [this.wrapper, view.buffer]);
+                } else {
+                    this.wrapper._notify("message", [this.wrapper, UTF8ArrayToStr(view)]);
+                }
+                view = null;
+            }
+
+            // Reset back to unknown type
+            this.fragmentInfo.type = 0;
+        }
+
+
         if (this.wrapper) {
             this.wrapper._notify("fragment", [this.wrapper, fragment]);
         }
@@ -165,6 +214,8 @@ var NativeWebSockets = function(url, options) {
  */
 NativeWebSockets.prototype._reCreate = function() {
 
+    var isWSS = (this._url.indexOf("wss:") === 0);
+
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var uri = new java.net.URI(this._url);
 
@@ -191,7 +242,7 @@ NativeWebSockets.prototype._reCreate = function() {
     }
 
     // Check for SSL/TLS
-    if (this._url.indexOf("wss:") === 0) {
+    if (isWSS) {
 		this._socket.setupSSL();
 		// This below code is currently broken in NativeScript; so we had to embed the SSL code in the Websocket library.
 		// TODO: Re-enable this once it is fixed in NativeScript so that the end user can actually setup the specific
@@ -214,7 +265,7 @@ NativeWebSockets.prototype._reCreate = function() {
  * @private
  */
 NativeWebSockets.prototype._notify = function(event, data) {
-    var eventCallbacks = this._callbacks[event];
+   var eventCallbacks = this._callbacks[event];
    for (var i=0;i<eventCallbacks.length;i++) {
        if (eventCallbacks[i].t) {
            eventCallbacks[i].c.apply(eventCallbacks[i].t, data);
@@ -590,3 +641,30 @@ NativeWebSockets.prototype.CLOSED = 3;
 module.exports = NativeWebSockets;
 
 
+function UTF8ArrayToStr(data) {
+    var result='', count=data.length;
+    var i=0, c1, c2, c3;
+
+    while(i < count) {
+        c1 = data[i++];
+        switch(c1 >> 4)
+        {
+            case 12: // 10xx xxxx
+            case 13: // 110x xxxx
+                c2 = (data[i++] & 0x3F);
+                result += String.fromCharCode(((c1 & 0x1F) << 6) | c2);
+                break;
+            case 14: // 1110 xxxx
+                c2 = (data[i++] & 0x3F) << 6;
+                c3 = (data[i++] & 0x3F);
+                result += String.fromCharCode(((c1 & 0x0F) << 12) | c2 | c3);
+                break;
+            default: // 0xxxxxxx
+                result += String.fromCharCode(c1);
+            break;
+
+        }
+    }
+
+    return result;
+}
