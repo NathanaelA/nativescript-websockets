@@ -19,8 +19,8 @@ I also do contract work; so if you have a module you want built for NativeScript
 
 
 
-## Installation 
-  
+## Installation
+
 First run `tns --version`
 
 ### v1.4 or later
@@ -30,11 +30,11 @@ Run `tns plugin add nativescript-websockets` in your ROOT directory of your proj
 ## Limitations
 * The sending of Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works..
 
-## Usage 
+## Usage
 
 There is two possible interfaces for you to use; the Simple WebSocket interface that emulates the browser based WebSockets and a more advanced WebSocket interface where you have more control.
 
-### Browser based Interface 
+### Browser based Interface
 ```js
 require('nativescript-websockets');
 
@@ -81,10 +81,10 @@ The browser based WebSockets are virtually identical to what you would get if yo
 The Advanced WebSockets allow you a lot more control over setting up and creating; in addition if they are closed; you can re-open it without having to reset your events.
 
 #### Create a new Advanced WebSocket
-#### var WS = require('nativescript-websockets');   var ws = new WS(url, options); 
+#### var WS = require('nativescript-websockets');   var ws = new WS(url, options);
 ##### Parameters
 * URL - Url to Open
-* Options 
+* Options
 ** protocols - (Array of string) - Valid protocols.  (See Limitation note)
 ** timeout - timeout  (Defaults to 60,0000ms on IOS amd 10,000ms on Android, setting this to 0 disables timeouts)
 ** allowCellular (ios only, defaults to True) - can disable the WebSocket from going over the cellular network
@@ -110,7 +110,7 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 #### .close(code, reason)
 ##### Parameters
 * code - OPTIONAL (Number) - code
-* reason - OPTIONAL (String) - reason 
+* reason - OPTIONAL (String) - reason
 
 #### Sends a Text or Binary Message
 #### .send(message)
@@ -118,7 +118,7 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 * message - String or Array/ArrayBuffer - Text string or Binary Message to send
 
 #### Retrieves the current State
-#### .readyState 
+#### .readyState
 ##### Values:
 * 0 - Connection
 * 1 - Open
@@ -162,3 +162,8 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 ##### Returns true if it is in the process of closing...
 
 
+## Tutorials
+
+Need a little bit more help getting up and running with NativeScript Websockets?  Check out these tutorials for NativeScript on the subject.
+
+* [Communicate with Websockets in a NativeScript Angular Application](https://www.thepolyglotdeveloper.com/2017/01/communicate-with-websockets-in-a-nativescript-angular-application/)
