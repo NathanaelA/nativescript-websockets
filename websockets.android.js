@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.1.0                                             Nathan@master-technology.com
+ * Version 0.1.1                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -186,7 +186,7 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
  */
 var NativeWebSockets = function(url, options) {
     options = options || {};
-    this._callbacks = {open: [], close: [], message: [], error: [], fragment: [], handshake: []};
+    this._callbacks = {open: [], close: [], message: [], error: [], fragment: [], handshake: [], ping: [], pong: []}; // Ping/Pong not supported yet
     this._hasOpened = false;
     this._queue = [];
     this._queueRunner = null;
