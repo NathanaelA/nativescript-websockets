@@ -1,11 +1,11 @@
 /*****************************************************************************************
- * (c) 2015, 2016, Master Technology
+ * (c) 2015-2017, Master Technology
  * Licensed under the MIT license or contact me for a support, changes, enhancements,
  * and/or if you require a commercial licensing
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.1.1                                             Nathan@master-technology.com
+ * Version 0.1.2                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -196,7 +196,7 @@ var NativeWebSockets = function(url, options) {
 
     this._browser = !!options.browser;
     this._timeout = options.timeout;
-    this._url = url;
+    this._url = url.replace(' ','+');
 
     //noinspection JSUnresolvedVariable
     this._proxy = options.proxy;
