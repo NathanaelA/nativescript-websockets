@@ -196,7 +196,7 @@ var NativeWebSockets = function(url, options) {
 
     this._browser = !!options.browser;
     this._timeout = options.timeout;
-    this._url = url.replace(' ','+');
+    this._url = url.replace(/\s/g,'+');
 
     //noinspection JSUnresolvedVariable
     this._proxy = options.proxy;
