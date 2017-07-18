@@ -219,6 +219,16 @@ NativeWebSockets.prototype._reCreate = function() {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var uri = new java.net.URI(this._url);
 
+    if (!this._headers.hasOwnProperty("Origin")) {
+        var originScheme =  uri.getScheme() === "wss" ? "https" : "http";
+        var originHost = uri.getPort() !== -1 ? uri.getHost() + ":" + uri.getPort() : uri.getHost();
+        this._headers["Origin"] = originScheme + "://" + originHost;
+    }
+
+    if (this._protocol !== "") {
+        this._headers["Sec-WebSocket-Protocol"] = this._protocol
+    }
+
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), toHashMap(this._headers), this._timeout);
 
