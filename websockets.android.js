@@ -85,7 +85,15 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
     },
     onClose: function (code, reason) {
         if (this.wrapper) {
-            this.wrapper._notify("close", [this.wrapper, code, reason]);
+            // org.java_websocket.WebSocketImpl.closeConnection() currently executes this callback prior to updating readystate to CLOSED
+            // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
+            // still appears to be up when it is not which is makes things like coding auto reconnection logic problematic. This seems like
+            // an issue/bug in org.java_websocket.WebSocketImpl.closeConnection(). Regardless, as a workaround we pass control back to
+            // closeConnection() prior to passing the notfication along so that the readystate gets updated to CLOSED.
+            // TODO: remove this when the readystate issue gets resolved.
+            setTimeout(() => { 
+                this.wrapper._notify("close", [this.wrapper, code, reason]);
+            }, 1);
         }
     },
     onMessage: function (message) {
