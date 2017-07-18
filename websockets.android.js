@@ -243,18 +243,13 @@ NativeWebSockets.prototype._reCreate = function() {
 
     // Check for SSL/TLS
     if (isWSS) {
-		this._socket.setupSSL();
-		// This below code is currently broken in NativeScript; so we had to embed the SSL code in the Websocket library.
-		// TODO: Re-enable this once it is fixed in NativeScript so that the end user can actually setup the specific
-		// SSL connection he wants...
-
-        /* //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+        //noinspection JSUnresolvedFunction,JSUnresolvedVariable
         var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
         sslContext.init( null, null, null );
         //noinspection JSUnresolvedFunction
         var socketFactory = sslContext.getSocketFactory();
         //noinspection JSUnresolvedFunction
-        this._socket.setSocket( socketFactory.createSocket() ); */
+        this._socket.setSocket( socketFactory.createSocket() );
     }
 };
 
@@ -493,7 +488,20 @@ NativeWebSockets.prototype._send = function(message) {
  */
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
-    return this._socket.getState()-1;
+    switch (this._socket.getReadyState()) {
+        case org.java_websocket.WebSocket.READYSTATE.NOT_YET_CONNECTED:
+            return this.NOT_YET_CONNECTED;
+        case org.java_websocket.WebSocket.READYSTATE.CONNECTING:
+            return this.CONNECTING;
+        case org.java_websocket.WebSocket.READYSTATE.OPEN:
+            return this.OPEN;
+        case org.java_websocket.WebSocket.READYSTATE.CLOSING:
+            return this.CLOSING;
+        case org.java_websocket .WebSocket.READYSTATE.CLOSED:
+            return this.CLOSED;
+        default:
+            throw new Error("getReadyState returned invalid value");
+    }
 };
 
 /**
