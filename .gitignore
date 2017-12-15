@@ -2,3 +2,6 @@
 *.tar
 .idea/
 support/
+
+# OS X
+.DS_Store

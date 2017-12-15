@@ -4,17 +4,24 @@
   "description": "A WebSocket NativeScript module for Android",
   "main": "websockets",
   "nativescript": {
-	"platforms": {
-		"android": "1.4.0",
-        "ios": "1.4.0"
-	}
+    "platforms": {
+      "android": "1.4.0",
+      "ios": "1.4.0"
+    }
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanaela/nativescript-websockets.git"
   },
   "keywords": [
-    "NativeScript", "WebSockets", "Development", "JavaScript", "Android", "iOS", "Sockets", "Websocket"
+    "NativeScript",
+    "WebSockets",
+    "Development",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "Sockets",
+    "Websocket"
   ],
   "author": {
     "name": "Nathanael Anderson",

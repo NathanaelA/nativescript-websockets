@@ -219,8 +219,13 @@ NativeWebSockets.prototype._reCreate = function() {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var uri = new java.net.URI(this._url);
 
+    var knownProtocols = [];
+    if(this._protocol){
+       knownProtocols.append(new org.java_websocket.protocols.Protocol(this._protocol));
+    }
+
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), toHashMap(this._headers), this._timeout);
+    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_6455([], knownProtocols), toHashMap(this._headers), this._timeout);
 
     //noinspection JSValidateTypes
     this._socket.wrapper = this;
