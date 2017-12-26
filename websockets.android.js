@@ -233,12 +233,14 @@ NativeWebSockets.prototype._reCreate = function() {
         this._headers["Origin"] = originScheme + "://" + originHost;
     }
 
-    if (this._protocol !== "") {
-        this._headers["Sec-WebSocket-Protocol"] = this._protocol
+    var knownExtensions = new java.util.ArrayList();
+    var knownProtocols = new java.util.ArrayList();
+    if(this._protocol){
+       knownProtocols.add(new org.java_websocket.protocols.Protocol(this._protocol));
     }
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), toHashMap(this._headers), this._timeout);
+    this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_6455(knownExtensions, knownProtocols), toHashMap(this._headers), this._timeout);
 
     //noinspection JSValidateTypes
     this._socket.wrapper = this;
@@ -506,20 +508,20 @@ NativeWebSockets.prototype._send = function(message) {
  */
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
-    switch (this._socket.getReadyState()) {
-        case org.java_websocket.WebSocket.READYSTATE.NOT_YET_CONNECTED:
-            return this.NOT_YET_CONNECTED;
-        case org.java_websocket.WebSocket.READYSTATE.CONNECTING:
-            return this.CONNECTING;
-        case org.java_websocket.WebSocket.READYSTATE.OPEN:
-            return this.OPEN;
-        case org.java_websocket.WebSocket.READYSTATE.CLOSING:
-            return this.CLOSING;
-        case org.java_websocket .WebSocket.READYSTATE.CLOSED:
-            return this.CLOSED;
-        default:
-            throw new Error("getReadyState returned invalid value");
-    }
+  switch (this._socket.getReadyState()) {
+      case org.java_websocket.WebSocket.READYSTATE.NOT_YET_CONNECTED:
+          return this.NOT_YET_CONNECTED;
+      case org.java_websocket.WebSocket.READYSTATE.CONNECTING:
+          return this.CONNECTING;
+      case org.java_websocket.WebSocket.READYSTATE.OPEN:
+          return this.OPEN;
+      case org.java_websocket.WebSocket.READYSTATE.CLOSING:
+          return this.CLOSING;
+      case org.java_websocket .WebSocket.READYSTATE.CLOSED:
+          return this.CLOSED;
+      default:
+          throw new Error("getReadyState returned invalid value");
+  }
 };
 
 /**
