@@ -9,7 +9,7 @@ This is a cross platform WebSocket library for IOS and Android.
 
 
 ## License
-My code is (c)2015-2016, Master Technology.  All my code is LICENSED under the MIT License. The Android Library is also MIT, the iOS libraries used Apache 2.0; which you may view them by reading the "LICENSE" file.
+My code is (c)2015-2017, Master Technology.  All my code is LICENSED under the MIT License. The Android Library is also MIT, the iOS libraries used Apache 2.0; which you may view them by reading the "LICENSE" file.
 
 I also do contract work; so if you have a module you want built for NativeScript (or any other software projects) feel free to contact me [nathan@master-technology.com](mailto://nathan@master-technology.com).
 

@@ -1,7 +1,10 @@
 *.tgz
 *.tar
+*.zip
 .idea/
 support/
+node_modules/
+
 
 # OS X
 .DS_Store

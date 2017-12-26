@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 0.1.2                                             Nathan@master-technology.com
+ * Version 1.4.0                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -89,10 +89,11 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
             // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
             // still appears to be up when it is not which is makes things like coding auto reconnection logic problematic. This seems like
             // an issue/bug in org.java_websocket.WebSocketImpl.closeConnection(). Regardless, as a workaround we pass control back to
-            // closeConnection() prior to passing the notfication along so that the readystate gets updated to CLOSED.
+            // closeConnection() prior to passing the notification along so that the readystate gets updated to CLOSED.
             // TODO: remove this when the readystate issue gets resolved.
-            setTimeout(() => { 
-                this.wrapper._notify("close", [this.wrapper, code, reason]);
+			var self = this;
+            setTimeout(function() {
+                self.wrapper._notify("close", [self.wrapper, code, reason]);
             }, 1);
         }
     },
@@ -221,7 +222,6 @@ var NativeWebSockets = function(url, options) {
  * @private
  */
 NativeWebSockets.prototype._reCreate = function() {
-
     var isWSS = (this._url.indexOf("wss:") === 0);
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
@@ -233,11 +233,16 @@ NativeWebSockets.prototype._reCreate = function() {
         this._headers["Origin"] = originScheme + "://" + originHost;
     }
 
-    var knownExtensions = new java.util.ArrayList();
-    var knownProtocols = new java.util.ArrayList();
+    // TODO: Add Per-message deflate?
+	var knownExtensions = new java.util.ArrayList();
+
+    // Must have a protocol, even if it is blank
+	var knownProtocols = new java.util.ArrayList();
     if(this._protocol){
        knownProtocols.add(new org.java_websocket.protocols.Protocol(this._protocol));
-    }
+    } else {
+		knownProtocols.add(new org.java_websocket.protocols.Protocol(""));
+	}
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_6455(knownExtensions, knownProtocols), toHashMap(this._headers), this._timeout);
@@ -396,6 +401,7 @@ NativeWebSockets.prototype.open = function() {
         if (this._browser) {
             return;
         }
+
         if (this.state() >= 3) {
             this._socket.wrapper = null;
             this._socket = null;
