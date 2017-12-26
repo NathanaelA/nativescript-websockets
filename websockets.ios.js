@@ -93,6 +93,8 @@ var NativeWebSockets = function(url, options) {
     this._allowCell = (options.allowCellular !== false);
 
     this._headers = options.headers || [];
+    // Fix an issue: https://github.com/zwopple/PocketSocket/issues/73
+    this._headers['Connection'] = "Upgrade";
 
     this._reCreate()
 };
