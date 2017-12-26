@@ -85,7 +85,15 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
     },
     onClose: function (code, reason) {
         if (this.wrapper) {
-            this.wrapper._notify("close", [this.wrapper, code, reason]);
+            // org.java_websocket.WebSocketImpl.closeConnection() currently executes this callback prior to updating readystate to CLOSED
+            // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
+            // still appears to be up when it is not which is makes things like coding auto reconnection logic problematic. This seems like
+            // an issue/bug in org.java_websocket.WebSocketImpl.closeConnection(). Regardless, as a workaround we pass control back to
+            // closeConnection() prior to passing the notfication along so that the readystate gets updated to CLOSED.
+            // TODO: remove this when the readystate issue gets resolved.
+            setTimeout(() => { 
+                this.wrapper._notify("close", [this.wrapper, code, reason]);
+            }, 1);
         }
     },
     onMessage: function (message) {
@@ -219,6 +227,16 @@ NativeWebSockets.prototype._reCreate = function() {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var uri = new java.net.URI(this._url);
 
+    if (!this._headers.hasOwnProperty("Origin")) {
+        var originScheme =  uri.getScheme() === "wss" ? "https" : "http";
+        var originHost = uri.getPort() !== -1 ? uri.getHost() + ":" + uri.getPort() : uri.getHost();
+        this._headers["Origin"] = originScheme + "://" + originHost;
+    }
+
+    if (this._protocol !== "") {
+        this._headers["Sec-WebSocket-Protocol"] = this._protocol
+    }
+
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_17(), toHashMap(this._headers), this._timeout);
 
@@ -243,18 +261,13 @@ NativeWebSockets.prototype._reCreate = function() {
 
     // Check for SSL/TLS
     if (isWSS) {
-		this._socket.setupSSL();
-		// This below code is currently broken in NativeScript; so we had to embed the SSL code in the Websocket library.
-		// TODO: Re-enable this once it is fixed in NativeScript so that the end user can actually setup the specific
-		// SSL connection he wants...
-
-        /* //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+        //noinspection JSUnresolvedFunction,JSUnresolvedVariable
         var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
         sslContext.init( null, null, null );
         //noinspection JSUnresolvedFunction
         var socketFactory = sslContext.getSocketFactory();
         //noinspection JSUnresolvedFunction
-        this._socket.setSocket( socketFactory.createSocket() ); */
+        this._socket.setSocket( socketFactory.createSocket() );
     }
 };
 
@@ -493,7 +506,20 @@ NativeWebSockets.prototype._send = function(message) {
  */
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
-    return this._socket.getState()-1;
+    switch (this._socket.getReadyState()) {
+        case org.java_websocket.WebSocket.READYSTATE.NOT_YET_CONNECTED:
+            return this.NOT_YET_CONNECTED;
+        case org.java_websocket.WebSocket.READYSTATE.CONNECTING:
+            return this.CONNECTING;
+        case org.java_websocket.WebSocket.READYSTATE.OPEN:
+            return this.OPEN;
+        case org.java_websocket.WebSocket.READYSTATE.CLOSING:
+            return this.CLOSING;
+        case org.java_websocket .WebSocket.READYSTATE.CLOSED:
+            return this.CLOSED;
+        default:
+            throw new Error("getReadyState returned invalid value");
+    }
 };
 
 /**
