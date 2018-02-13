@@ -25,9 +25,15 @@ var _WebSocket = NSObject.extend({
     wrapper: null,
 
     webSocketDidOpen: function(webSocket) {
+        if (!this.wrapper) {
+            return;
+        }
         this.wrapper._notify("open", [this.wrapper]);
     },
     webSocketDidReceiveMessage: function(webSocket, message) {
+        if (!this.wrapper) {
+            return;
+        }
         if (Object.prototype.toString.apply(message) === "[object NSConcreteMutableData]") {
             // This is a HACK currently; but after benchmarking it --
             // it is much faster than I would have expected.
@@ -54,12 +60,18 @@ var _WebSocket = NSObject.extend({
         this.wrapper._notify("message", [this.wrapper, message]);
     },
     webSocketDidFailWithError: function(webSocket, err) {
+        if (!this.wrapper) {
+           return;
+        }
         this.wrapper._notify("close", [this.wrapper, 1006, "", false]);
         if (!err || err.code !== 3 && err.code !== 54) {
             this.wrapper._notify("error", [this.wrapper, err]);
         }
     },
     webSocketDidCloseWithCodeReasonWasClean:function(webSocket, code, reason, wasClean)  {
+        if (!this.wrapper) {
+            return;
+        }
         this.wrapper._notify("close", [this.wrapper, code, reason, wasClean]);
     }
 },{ protocols: [PSWebSocketDelegate] });
