@@ -75,7 +75,7 @@ var toHashMap = function(obj) {
  * We use a thin shell to just facilitate communication from ANDROID to our JS code
  * We also use this class to try and standardize the messages
  */
-var _WebSocket = org.java_websocket.client.WebSocketClient.extend({
+var _WebSocket = org.java_websocket.client.WebSocketClient.extend('nathanaela.nativescript_websocket.WebSocket', {
     fragmentInfo: {type: 0, data: [], sizes: 0},
     wrapper: null,
     onOpen: function () {
