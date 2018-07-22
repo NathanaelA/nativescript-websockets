@@ -1,0 +1,10 @@
+<Page shownModally="shownModally" loaded="loaded" actionBarHidden="true">
+    <GridLayout row="1" columns="*,*,*,*" rows="auto,auto,auto,auto" cssClass="border">
+        <Label row="0" colSpan="4" text="Settings" cssClass="title" />
+        <Label row="1" text="Name: " /><TextField id="name" col="1" colSpan="3" row="1" hint="Enter your name" text="{{name}}" />
+        <Label row="2" text="Server: " /><TextField id="server" col="1" colSpan="3" row="2" hint="Enter a server" text="{{server}}"/>
+
+        <Button row="3" col="0" colSpan="2" text="Save" tap="save" />
+        <Button row="3" col="2" colSpan="2" text="Cancel" tap="cancel" />
+    </GridLayout>
+</Page>

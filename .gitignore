@@ -4,6 +4,9 @@
 .idea/
 support/
 node_modules/
+demo/platforms/
+demo1/
+demo_server/
 
 
 # OS X

@@ -1,0 +1,44 @@
+<Page id="page" loaded="pageLoaded"
+                        navigatedTo="navigatedTo"
+                        xmlns:tsd="nativescript-ui-sidedrawer"
+                        xmlns="http://www.nativescript.org/tns.xsd">
+    <Page.actionBar>
+
+        <ActionBar title="crossCommunicator">
+            <ActionBar.actionItems>
+                <ActionItem ios:icon="~/icons/ic_settings.png" android:text="Settings" tap="settingsTap" ios.position="right" android.position="popup" />
+            </ActionBar.actionItems>
+        </ActionBar>
+    </Page.actionBar>
+
+    <tsd:RadSideDrawer title="crossCommunicator" id="sidebar">
+        <tsd:RadSideDrawer.drawerContent>
+            <StackLayout backgroundColor="#FFFFFF">
+                <Label text="Welcome to crossCommunicator" />
+                <StackLayout height="1" backgroundColor="#c7c875"/>
+                <Label text="The websockets library on Android is Copyright (c) 2010-2012 Nathan Rajlich" textWrap="true"/>
+                <Label text="The websockets library on iOS is Copyright (c) 2014 Zwopple Limited" textWrap="true"/>
+                <Label text="The NativeScript websockets library is Copyright (c) 2015-2018 Master Technology" textWrap="true"/>
+            </StackLayout>
+        </tsd:RadSideDrawer.drawerContent>
+        <tsd:RadSideDrawer.mainContent>
+            <GridLayout rows="*,auto" columns="*">
+                <ScrollView id="scroller" class="border">
+                    <Repeater items="{{messages}}">
+                        <Repeater.itemTemplate>
+                            <GridLayout columns="auto,*,auto" rows="auto">
+                                <Label col="0"  class="{{ from === 1 || from === 2 ? 'noicon' : 'icons larger'}}" text="{{ iconLeft }}"/>
+                                <TextView col="1" editable="false" text="{{ message }}" class="{{ from === 1 ? 'rightmessage message' : from === 2 ? 'errormessage message' : from === 0 ? 'sysmessage message' : 'leftmessage message' }}" textWrap="true"/>
+                                <Label col="2"  class="{{ from === 1 ? 'blue icons larger' : from === 2 ? 'red icons larger' : 'noicon'}}" text="{{ iconRight }}"/>
+                            </GridLayout>
+                        </Repeater.itemTemplate>
+                    </Repeater>
+                </ScrollView>
+                <GridLayout row="1" rows="*" columns="*,auto" class="border">
+                    <TextField id="entry" hint="Type a message"/>
+                    <Button id="go" col="1" text="&#xE163;" tap="goTap" class="icons sendbutton"/>
+                </GridLayout>
+            </GridLayout>
+        </tsd:RadSideDrawer.mainContent>
+    </tsd:RadSideDrawer>
+</Page>

@@ -9,7 +9,7 @@ This is a cross platform WebSocket library for IOS and Android.
 
 
 ## License
-My code is (c)2015-2017, Master Technology.  All my code is LICENSED under the MIT License. The Android Library is also MIT, the iOS libraries used Apache 2.0; which you may view them by reading the "LICENSE" file.
+My code is (c)2015-2018, Master Technology.  All my code is LICENSED under the MIT License. The Android Library is also MIT, the iOS libraries used Apache 2.0; which you may view them by reading the "LICENSE" file.
 
 I also do contract work; so if you have a module you want built for NativeScript (or any other software projects) feel free to contact me [nathan@master-technology.com](mailto://nathan@master-technology.com).
 
@@ -29,6 +29,9 @@ Run `tns plugin add nativescript-websockets` in your ROOT directory of your proj
 
 ## Limitations
 * The sending of Protocols support is not fully implemented on both platforms.  Do not depend on this; it only partially works..
+
+## Angular
+Pay attention and don't forget to use `NgZone.run()` -- if you don't use it in some cases; your UI may not update when you get data updates.  This is NOT a limitation of this library; but just how Angular works for its change detection system.
 
 ## Usage
 
@@ -69,7 +72,7 @@ The browser based WebSockets are virtually identical to what you would get if yo
 * Protocols - OPTIONAL (Array of String) - valid list protocols.  Please see limitations note.   
 
 #### Attaches an event to the WebSocket
-#### .attachEventListener(EventName, function)
+****#### .attachEventListener(EventName, function)
 #### .on(EventName, function)
 ##### Parameters
 * EventName - (String) can be "open", "close", "message" and "error"
@@ -88,6 +91,7 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 ** protocols - (Array of string) - Valid protocols.  (See Limitation note)
 ** timeout - timeout  (Defaults to 60,0000ms on IOS amd 10,000ms on Android, setting this to 0 disables timeouts)
 ** allowCellular (ios only, defaults to True) - can disable the WebSocket from going over the cellular network
+** sslSocketFactory (android only, defaults to null) - you can pass in your ssl socket factory you want to use.
 
 #### Attaches an event to the WebSocket
 #### .attachEventListener(EventName, function, passedThis)

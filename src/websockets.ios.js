@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 1.4.0                                             Nathan@master-technology.com
+ * Version 1.5.0                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -488,7 +488,7 @@ Object.defineProperty(NativeWebSockets.prototype, "ios", {
  * This is a list standardized Close Codes
  * @type {Number}
  */
-NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
+NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, SERVICE_RESTART: 1012, TRY_AGAIN_LATER: 1013, BAD_GATEWAY: 1014, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
 
 /**
  * This is the NOT_YET_CONNECTED value

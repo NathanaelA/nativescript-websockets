@@ -1,0 +1,29 @@
+
+Label {
+    padding: 2;
+    vertical-align: center;
+    horizontal-align: right;
+}
+
+.border {
+    border-color: black;
+    background-color: white;
+    margin: 0;
+}
+
+.title {
+    background-color: gainsboro;
+    font-size:26;
+    font-weight: bold;
+    padding: 4;
+    padding-left: 10;
+    horizontal-align: stretch;
+}
+
+TextField {
+    margin-right: 10;
+}
+
+Button {
+    padding: 2;
+}

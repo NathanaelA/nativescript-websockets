@@ -1,11 +1,11 @@
 /*****************************************************************************************
- * (c) 2015-2017, Master Technology
+ * (c) 2015-2018, Master Technology
  * Licensed under the MIT license or contact me for a support, changes, enhancements,
  * and/or if you require a commercial licensing
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 1.4.0                                             Nathan@master-technology.com
+ * Version 1.5.0                                              Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -75,7 +75,7 @@ var toHashMap = function(obj) {
  * We use a thin shell to just facilitate communication from ANDROID to our JS code
  * We also use this class to try and standardize the messages
  */
-var _WebSocket = org.java_websocket.client.WebSocketClient.extend('nathanaela.nativescript_websockets.WebSocket', {
+var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.master.nativescript.WebSocket', {
     fragmentInfo: {type: 0, data: [], sizes: 0},
     wrapper: null,
     onOpen: function () {
@@ -98,27 +98,48 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('nathanaela.na
         }
     },
     onMessage: function (message) {
+    	// Check for Native Java Objects
+		 console.log("TO:", Object.prototype.toString.call(message), message);
+
+		if (typeof message === "object" && typeof message.getClass === 'function') {
+    		this.onMessageBinary(message);
+    		return;
+		}
+
+		// Should be a JavaScript String or ArrayBuffer
         if (this.wrapper) {
             this.wrapper._notify("message", [this.wrapper, message]);
         }
     },
     onMessageBinary: function(binaryMessage) {
-        if (this.wrapper) {
+		console.log("TO2:", Object.prototype.toString.call(binaryMessage), binaryMessage);
 
-            // Make sure binaryMessage is at beginning of buffer
-            //noinspection JSUnresolvedFunction
-            binaryMessage.rewind();
+        if (this.wrapper && binaryMessage) {
 
-            // Convert Binary Message into ArrayBuffer/Uint8Array
-            //noinspection JSUnresolvedFunction
-            var count = binaryMessage.limit();
-            var view = new Uint8Array(count);
-            for (var i=0;i<count;i++) {
-                view[i] = binaryMessage.get(i);
-            }
-            binaryMessage = null;
+        	// Is a Native JAVA Buffer type
+			if (typeof binaryMessage.rewind === 'function') {
 
-            this.wrapper._notify("message", [this.wrapper, view.buffer]); }
+				// Make sure binaryMessage is at beginning of buffer
+				//noinspection JSUnresolvedFunction
+				binaryMessage.rewind();
+
+				// Convert Binary Message into ArrayBuffer/Uint8Array
+				//noinspection JSUnresolvedFunction
+				var count = binaryMessage.limit();
+				var view = new Uint8Array(count);
+				for (var i = 0; i < count; i++) {
+					view[i] = binaryMessage.get(i);
+				}
+				binaryMessage = null;
+				this.wrapper._notify("message", [this.wrapper, view.buffer]);
+			} else {
+				// If this is already an a ArrayBuffer
+
+				//console.log("TO:", Object.prototype.toString.call(binaryMessage));
+
+				this.wrapper._notify("message", [this.wrapper, binaryMessage]);
+			}
+		}
     },
     onPong: function(){
 
@@ -199,6 +220,7 @@ var NativeWebSockets = function(url, options) {
     this._hasOpened = false;
     this._queue = [];
     this._queueRunner = null;
+    this._sslSocketFactory = options.sslSocketFactory || null;
 
     // TODO: Replace Hack when we support protocols in Android; we want to "emulate" that the first protocol sent was accepted
     this._protocol = options.protocols && options.protocols[0] || "";
@@ -268,11 +290,16 @@ NativeWebSockets.prototype._reCreate = function() {
 
     // Check for SSL/TLS
     if (isWSS) {
-        //noinspection JSUnresolvedFunction,JSUnresolvedVariable
-        var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
-        sslContext.init( null, null, null );
-        //noinspection JSUnresolvedFunction
-        var socketFactory = sslContext.getSocketFactory();
+		var socketFactory;
+		if (this._sslSocketFactory) {
+			socketFactory = this._sslSocketFactory;
+		} else {
+			//noinspection JSUnresolvedFunction,JSUnresolvedVariable
+			var sslContext = javax.net.ssl.SSLContext.getInstance( "TLS" );
+			sslContext.init( null, null, null );
+			//noinspection JSUnresolvedFunction
+			socketFactory = sslContext.getSocketFactory();
+		}
         //noinspection JSUnresolvedFunction
         this._socket.setSocket( socketFactory.createSocket() );
     }
@@ -640,7 +667,7 @@ Object.defineProperty(NativeWebSockets.prototype, "android", {
  * This is a list standardized Close Codes
  * @type {Number}
  */
-NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
+NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, SERVICE_RESTART: 1012, TRY_AGAIN_LATER: 1013, BAD_GATEWAY: 1014, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
 
 /**
  * This is the NOT_YET_CONNECTED value

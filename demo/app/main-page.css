@@ -1,0 +1,58 @@
+GridLayout, Repeater {
+    padding: 2;
+}
+
+.larger {
+    font-size: 22;
+}
+
+.message {
+    padding: 5;
+    border-radius: 10;
+    margin: 2;
+    font-size: 12;
+}
+
+.rightmessage {
+    background-color: skyblue;
+    color: blue;
+    horizontal-align: right;
+}
+
+.errormessage {
+    background-color: indianred;
+    color: white;
+    horizontal-align: right;
+}
+
+.leftmessage {
+    background-color: cornsilk;
+    color: black;
+    horizontal-align: left;
+}
+
+.sysmessage {
+    background-color: cadetblue;
+    color: white;
+    horizontal-align: left;
+}
+
+.blue {
+    color: blue;
+}
+
+.red {
+    color: maroon;
+}
+.noicon {
+    width: 90;
+}
+
+.sendbutton {
+    margin: 2;
+    width: 40;
+    height: 40;
+    border-radius: 20;
+    background-color: gainsboro;
+    color: black;
+}
