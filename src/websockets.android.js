@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 1.5.0                                              Nathan@master-technology.com
+ * Version 1.5.1                                              Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -465,13 +465,22 @@ NativeWebSockets.prototype.send = function(message) {
 
     // If we have a queue, we need to start processing it...
     if (this._queue.length && state === this.OPEN) {
-        for (var i = 0; i < this._queue.length; i++) {
-            this._send(this._queue[i]);
+        var sendSuccess = true;
+        while (this._queue.length && sendSuccess) {
+            var oldMessage = this._queue.pop();
+            sendSuccess = this._send(oldMessage);
         }
-        this._queue = [];
-        if (this._queueRunner) {
-            clearTimeout(this._queueRunner);
-            this._queueRunner = null;
+        if (sendSuccess) {
+            if (this._queueRunner) {
+                clearTimeout(this._queueRunner);
+                this._queueRunner = null;
+            }
+        } else {
+            if (message != null && !this._browser) {
+                this._queue.push(message);
+                this._startQueueRunner();
+            }
+            return false;
         }
     }
 
@@ -491,8 +500,7 @@ NativeWebSockets.prototype.send = function(message) {
         return false;
     }
 
-    this._send(message);
-    return true;
+    return this._send(message);
 };
 
 /**
@@ -515,24 +523,34 @@ NativeWebSockets.prototype._startQueueRunner = function() {
  * @private
  */
 NativeWebSockets.prototype._send = function(message) {
-  if (message instanceof ArrayBuffer || message instanceof Uint8Array || Array.isArray(message)) {
-      var view;
-      if (message instanceof ArrayBuffer) {
-         view = new Uint8Array(message);
-      } else {
-         view = message;
-      }
-      //noinspection JSUnresolvedFunction,JSUnresolvedVariable
-      var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.class.getField("TYPE").get(null), view.length);
-      for (var i=0;i<view.length;i++) {
-          //noinspection JSUnresolvedFunction,JSUnresolvedVariable
-          java.lang.reflect.Array.setByte(buffer, i, byte(view[i]));
-      }
-      this._socket.send(buffer);
-  } else {
-      this._socket.send(message);
-  }
+    try {
+        if (message instanceof ArrayBuffer || message instanceof Uint8Array || Array.isArray(message)) {
+            var view;
+            if (message instanceof ArrayBuffer) {
+                view = new Uint8Array(message);
+            } else {
+                view = message;
+            }
+            //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+            var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.class.getField("TYPE").get(null), view.length);
+            for (var i = 0; i < view.length; i++) {
+                //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+                java.lang.reflect.Array.setByte(buffer, i, byte(view[i]));
+            }
+            this._socket.send(buffer);
+        } else {
+            this._socket.send(message);
+        }
+    } catch (err) {
+        // Websocket is probably diconnected; so put the back at the top of the message queue...
+        if (this._browser) { return false; }
 
+        this._queue.unshift(message);
+        this._startQueueRunner();
+
+        return false;
+    }
+    return true;
 };
 
 /**
