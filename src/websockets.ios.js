@@ -305,6 +305,7 @@ NativeWebSockets.prototype.close = function(code, message) {
  * @returns {boolean} - returns false if it is unable to send the message at this time, it will queue them up and try later...
  */
 NativeWebSockets.prototype.send = function(message) {
+    message = message.slice(0);
     var state = this.state();
 
     // If we have a queue, we need to start processing it...
