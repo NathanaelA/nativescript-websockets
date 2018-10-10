@@ -1,6 +1,6 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.5.1",
+  "version": "1.5.3",
   "description": "A WebSocket NativeScript module for Android and iOS",
   "main": "websockets",
   "nativescript": {
@@ -37,7 +37,12 @@
       "name": "Choi Won",
       "email": "help@myso.kr",
       "url": "https://github.com/myso-kr"
-    }
+    },
+	{ 
+		"name": "Linus Gasser",
+		"email": "linus.gasser@epfl.ch",
+		"url": "https://github.com/ineiti"
+	}
   ],
   "bugs": {
     "url": "https://github.com/nathanaela/nativescript-websockets/issues"

@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 1.5.1                                              Nathan@master-technology.com
+ * Version 1.5.2                                              Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -78,12 +78,19 @@ var toHashMap = function(obj) {
 var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.master.nativescript.WebSocket', {
     fragmentInfo: {type: 0, data: [], sizes: 0},
     wrapper: null,
+    debug: false,
     onOpen: function () {
+        if (this.debug) {
+            console.log("WebSocket Event: OnOpen");
+        }
         if (this.wrapper) {
             this.wrapper._notify("open", [this.wrapper]);
         }
     },
     onClose: function (code, reason) {
+        if (this.debug) {
+            console.log("WebSocket Event: OnClose", code, reason);
+        }
         if (this.wrapper) {
             // org.java_websocket.WebSocketImpl.closeConnection() currently executes this callback prior to updating readystate to CLOSED
             // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
@@ -94,13 +101,15 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
 			var self = this;
             setTimeout(function() {
                 self.wrapper._notify("close", [self.wrapper, code, reason]);
+                self.wrapper = null;  // Clean up memory
             }, 1);
         }
     },
     onMessage: function (message) {
+        if (this.debug) {
+            console.log("WebSocket Event: OnMessage", message);
+        }
     	// Check for Native Java Objects
-		 console.log("TO:", Object.prototype.toString.call(message), message);
-
 		if (typeof message === "object" && typeof message.getClass === 'function') {
     		this.onMessageBinary(message);
     		return;
@@ -112,7 +121,9 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
         }
     },
     onMessageBinary: function(binaryMessage) {
-		console.log("TO2:", Object.prototype.toString.call(binaryMessage), binaryMessage);
+        if (this.debug) {
+            console.log("WebSocket Event: OnMessageBinary");
+        }
 
         if (this.wrapper && binaryMessage) {
 
@@ -142,15 +153,25 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
 		}
     },
     onPong: function(){
+        if (this.debug) {
+            console.log("WebSocket Event: onPong");
+        }
 
     },
     onError: function (err) {
+        if (this.debug) {
+            console.log("WebSocket Event: onError", err);
+        }
         if (this.wrapper) {
             this.wrapper._notify("error", [this.wrapper, err]);
         }
     },
     onFragment: function (fragment) {
         var optCode = fragment.optcode.toString();
+        if (this.debug) {
+            console.log("WebSocket Event: onFragment", optCode);
+        }
+
         if (optCode !== "CONTINUOUS") {
             if (this.fragmentInfo.type !== 0) {
                 console.log("Missing Fragment info, skipped fragment");
@@ -202,6 +223,9 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
         }
     },
     onWebsocketHandshakeReceivedAsClient: function (handshake) {
+        if (this.debug) {
+            console.log("WebSocket Event: Handshake Received", handshake);
+        }
         if (this.wrapper) {
             this.wrapper._notify("handshake", [this.wrapper, handshake]);
         }
@@ -221,6 +245,7 @@ var NativeWebSockets = function(url, options) {
     this._queue = [];
     this._queueRunner = null;
     this._sslSocketFactory = options.sslSocketFactory || null;
+    this._debug = (options.debug === true || options.debug > 0);
 
     // TODO: Replace Hack when we support protocols in Android; we want to "emulate" that the first protocol sent was accepted
     this._protocol = options.protocols && options.protocols[0] || "";
@@ -235,6 +260,9 @@ var NativeWebSockets = function(url, options) {
     this._timeout = options.timeout || 10000;
 
     this._headers = options.headers || [];
+    if (this._debug === true) {
+        org.java_websocket.WebSocketImpl.DEBUG = true;
+    }
 
     this._reCreate();
 };
@@ -250,7 +278,7 @@ NativeWebSockets.prototype._reCreate = function() {
     var uri = new java.net.URI(this._url);
 
     if (!this._headers.hasOwnProperty("Origin")) {
-        var originScheme =  uri.getScheme() === "wss" ? "https" : "http";
+        var originScheme =  isWSS ? "https" : "http";
         var originHost = uri.getPort() !== -1 ? uri.getHost() + ":" + uri.getPort() : uri.getHost();
         this._headers["Origin"] = originScheme + "://" + originHost;
     }
@@ -261,16 +289,24 @@ NativeWebSockets.prototype._reCreate = function() {
     // Must have a protocol, even if it is blank
 	var knownProtocols = new java.util.ArrayList();
     if(this._protocol){
-       knownProtocols.add(new org.java_websocket.protocols.Protocol(this._protocol));
+        knownProtocols.add(new org.java_websocket.protocols.Protocol(this._protocol));
     } else {
-		knownProtocols.add(new org.java_websocket.protocols.Protocol(""));
+	    knownProtocols.add(new org.java_websocket.protocols.Protocol(""));
 	}
+
+	// Clear old memory if used...
+	if (this._socket && this._socket.wrapper) {
+	    this._socket.wrapper = null;
+	    this._socket = null;
+    }
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._socket = new _WebSocket(uri, new org.java_websocket.drafts.Draft_6455(knownExtensions, knownProtocols), toHashMap(this._headers), this._timeout);
 
     //noinspection JSValidateTypes
+    // Create linking and values for the socket controller.
     this._socket.wrapper = this;
+    this._socket.debug = this._debug;
 
     // check for Proxy
     var proxy = null;
@@ -410,7 +446,7 @@ NativeWebSockets.prototype.removeEventListener = function(event, callback) {
         var eventCallbacks = this._callbacks[event];
         for (var i=eventCallbacks.length-1;i>=0;i--) {
             if (eventCallbacks[i].c === callback) {
-                eventCallbacks.slice(i, 1);
+                eventCallbacks.splice(i, 1);
             }
         }
     } else {
@@ -477,7 +513,7 @@ NativeWebSockets.prototype.send = function(message) {
             }
         } else {
             if (message != null && !this._browser) {
-                this._queue.push(message);
+                this._queue.push(message.slice(0));
                 this._startQueueRunner();
             }
             return false;
@@ -495,7 +531,7 @@ NativeWebSockets.prototype.send = function(message) {
         if (this._browser) {
             return false;
         }
-        this._queue.push(message);
+        this._queue.push(message.slice(0));
         this._startQueueRunner();
         return false;
     }

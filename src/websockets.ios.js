@@ -5,7 +5,7 @@
  *
  * Any questions please feel free to email me or put a issue up on github
  *
- * Version 1.5.0                                             Nathan@master-technology.com
+ * Version 1.5.2                                             Nathan@master-technology.com
  ****************************************************************************************/
 "use strict";
 
@@ -253,7 +253,7 @@ NativeWebSockets.prototype.removeEventListener = function(event, callback) {
         var eventCallbacks = this._callbacks[event];
         for (var i=eventCallbacks.length-1;i>=0;i--) {
             if (eventCallbacks[i].c === callback) {
-                eventCallbacks.slice(i, 1);
+                eventCallbacks.splice(i, 1);
             }
         }
     } else {
@@ -330,7 +330,7 @@ NativeWebSockets.prototype.send = function(message) {
         if (this._browser) {
             return false;
         }
-        this._queue.push(message);
+        this._queue.push(message.slice(0));
         this._startQueueRunner();
         return false;
     }
