@@ -335,7 +335,7 @@ NativeWebSockets.prototype.send = function(message) {
         return false;
     }
 
-    this._send(message);
+    this._send(message.slice(0));
     return true;
 };
 
