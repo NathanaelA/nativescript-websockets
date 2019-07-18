@@ -98,10 +98,12 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
             // an issue/bug in org.java_websocket.WebSocketImpl.closeConnection(). Regardless, as a workaround we pass control back to
             // closeConnection() prior to passing the notification along so that the readystate gets updated to CLOSED.
             // TODO: remove this when the readystate issue gets resolved.
-			var self = this;
+			      var self = this;
             setTimeout(function() {
-                self.wrapper._notify("close", [self.wrapper, code, reason]);
-                self.wrapper = null;  // Clean up memory
+                if (self.wrapper) {
+                    self.wrapper._notify('close', [self.wrapper, code, reason])
+                    self.wrapper = null;  // Clean up memory
+                } 
             }, 1);
         }
     },
