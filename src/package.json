@@ -1,6 +1,6 @@
 {
   "name": "nativescript-websockets",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "A WebSocket NativeScript module for Android and iOS",
   "main": "websockets",
   "nativescript": {
