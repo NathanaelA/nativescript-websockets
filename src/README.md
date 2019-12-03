@@ -88,10 +88,11 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 ##### Parameters
 * URL - Url to Open
 * Options
-** protocols - (Array of string) - Valid protocols.  (See Limitation note)
-** timeout - timeout  (Defaults to 60,0000ms on IOS amd 10,000ms on Android, setting this to 0 disables timeouts)
-** allowCellular (ios only, defaults to True) - can disable the WebSocket from going over the cellular network
-** sslSocketFactory (android only, defaults to null) - you can pass in your ssl socket factory you want to use.
+  * protocols - (Array of string) - Valid protocols.  (See Limitation note)
+  * timeout - timeout  (Defaults to 60,0000ms on IOS amd 10,000ms on Android, setting this to 0 disables timeouts)
+  * allowCellular (ios only, defaults to True) - can disable the WebSocket from going over the cellular network
+  * sslSocketFactory (android only, defaults to null) - you can pass in your ssl socket factory you want to use.
+  * connectionLostTimeout (android only, defaults to 60s) - Detect lost connection using ping/pong, forcing a socket disconnect. See [Lost connection detection](https://github.com/TooTallNate/Java-WebSocket/wiki/Lost-connection-detection) for more information.
 
 #### Attaches an event to the WebSocket
 #### .attachEventListener(EventName, function, passedThis)
