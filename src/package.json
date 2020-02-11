@@ -38,11 +38,11 @@
       "email": "help@myso.kr",
       "url": "https://github.com/myso-kr"
     },
-	{ 
-		"name": "Linus Gasser",
-		"email": "linus.gasser@epfl.ch",
-		"url": "https://github.com/ineiti"
-	}
+    {
+      "name": "Linus Gasser",
+      "email": "linus.gasser@epfl.ch",
+      "url": "https://github.com/ineiti"
+    }
   ],
   "bugs": {
     "url": "https://github.com/nathanaela/nativescript-websockets/issues"
