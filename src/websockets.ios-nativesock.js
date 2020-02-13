@@ -141,8 +141,9 @@ NativeWebSockets.prototype._notify = function (event, data) {
             });
         } else {
             //force main thread
+            var _this = this;
             Promise.resolve().then(()=>{
-                eCB_c.apply(this, data)
+                eCB_c.apply(_this, data)
             });
         }
     }
@@ -184,8 +185,12 @@ NativeWebSockets.prototype._notifyBrowser = function (event, data) {
         default: return;
     }
     var eventCallbacks = this._callbacks[event];
+    var _this = this;
     for (var i = 0; i < eventCallbacks.length; i++) {
-        eventCallbacks[i].c.call(this, eventResult);
+        var eCB_c = eventCallbacks[i].c;
+        Promise.resolve().then(()=>{
+            eCB_c.call(_this, eventResult);
+        });
     }
 };
 
