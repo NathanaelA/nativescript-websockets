@@ -357,9 +357,9 @@ NativeWebSockets.prototype._receive = function(){
             _this._notifyErrors(err);
         }else{
             if(nsURLWebSocketMsg.type === NSURLSessionWebSocketMessageType.Data){
-                _this._notify("message", [this, interop.bufferFromData(nsURLWebSocketMsg.data)]);
+                _this._notify("message", [_this, interop.bufferFromData(nsURLWebSocketMsg.data)]);
             } else if (nsURLWebSocketMsg.type === NSURLSessionWebSocketMessageType.String) {
-                _this._notify("message", [this, nsURLWebSocketMsg.string]);
+                _this._notify("message", [_this, nsURLWebSocketMsg.string]);
             }
             _this._receive();
         }
