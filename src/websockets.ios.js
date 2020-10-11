@@ -34,7 +34,7 @@ var _WebSocket = NSObject.extend({
         if (!this.wrapper) {
             return;
         }
-        if (Object.prototype.toString.apply(message) === "[object NSConcreteMutableData]") {
+        if (Object.prototype.toString.apply(message) === "[object NSConcreteMutableData]" || (message && message.constructor && message.constructor.name === "NSMutableData")) {
             let buf = new ArrayBuffer(message.length);
             message.getBytes(buf);
             message = buf;
