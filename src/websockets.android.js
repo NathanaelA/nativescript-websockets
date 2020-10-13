@@ -253,13 +253,13 @@ var NativeWebSockets = function(url, options) {
     this._protocol = options.protocols && options.protocols[0] || "";
 
     this._browser = !!options.browser;
-    this._timeout = options.timeout;
     this._url = url.replace(/\s/g,'+');
-
+    
     //noinspection JSUnresolvedVariable
     this._proxy = options.proxy;
-
+    
     this._timeout = options.timeout || 10000;
+    this._connectionLostTimeout = !isNaN(options.connectionLostTimeout) ? options.connectionLostTimeout : null
 
     this._headers = options.headers || [];
     if (this._debug === true) {
@@ -324,6 +324,10 @@ NativeWebSockets.prototype._reCreate = function() {
     if (proxy) {
         //noinspection JSUnresolvedFunction
         this._socket.setProxy(proxy);
+    }
+
+    if (this._connectionLostTimeout) {
+        this._socket.setConnectionLostTimeout(this._connectionLostTimeout)
     }
 
     // Check for SSL/TLS
