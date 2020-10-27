@@ -593,20 +593,18 @@ NativeWebSockets.prototype._send = function(message) {
 
 /**
  * Returns the state of the Connection
- * @returns {Number} - returns this.NOT_YET_CONNECTED, .CONNECTING, .OPEN, .CLOSING or .CLOSED
+ * @returns {Number} - returns this.NOT_YET_CONNECTED, .OPEN, .CLOSING or .CLOSED
  */
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
   switch (this._socket.getReadyState()) {
-      case org.java_websocket.WebSocket.READYSTATE.NOT_YET_CONNECTED:
+      case org.java_websocket.enums.getReadyState.NOT_YET_CONNECTED:
           return this.NOT_YET_CONNECTED;
-      case org.java_websocket.WebSocket.READYSTATE.CONNECTING:
-          return this.CONNECTING;
-      case org.java_websocket.WebSocket.READYSTATE.OPEN:
+      case org.java_websocket.enums.getReadyState.OPEN:
           return this.OPEN;
-      case org.java_websocket.WebSocket.READYSTATE.CLOSING:
+      case org.java_websocket.enums.getReadyState.CLOSING:
           return this.CLOSING;
-      case org.java_websocket .WebSocket.READYSTATE.CLOSED:
+      case org.java_websocket.enums.getReadyState.CLOSED:
           return this.CLOSED;
       default:
           throw new Error("getReadyState returned invalid value");
@@ -635,14 +633,6 @@ NativeWebSockets.prototype.isClosed = function() {
  */
 NativeWebSockets.prototype.isClosing = function() {
     return this._socket.isClosing();
-};
-
-/**
- * Is the connection currently connecting
- * @returns {boolean} - true if connecting
- */
-NativeWebSockets.prototype.isConnecting = function() {
-    return this._socket.isConnecting();
 };
 
 /**
@@ -729,13 +719,7 @@ NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1
  * This is the NOT_YET_CONNECTED value
  * @type {number}
  */
-NativeWebSockets.prototype.NOT_YET_CONNECTED = -1;
-
-/**
- * This is the CONNECTING value
- * @type {number}
- */
-NativeWebSockets.prototype.CONNECTING =  0;
+NativeWebSockets.prototype.NOT_YET_CONNECTED = 0;
 
 /**
  * This is the OPEN value
