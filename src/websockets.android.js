@@ -231,6 +231,12 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
         if (this.wrapper) {
             this.wrapper._notify("handshake", [this.wrapper, handshake]);
         }
+    },
+    onSetSSLParameters: function (sslParameters) {
+        // https://github.com/TooTallNate/Java-WebSocket/wiki/No-such-method-error-setEndpointIdentificationAlgorithm
+        if (global.android.os.Build.VERSION.SDK_INT >= 24) {
+            this.super.onSetSSLParameters(sslParameters);
+        }
     }
 });
 
