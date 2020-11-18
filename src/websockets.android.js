@@ -604,13 +604,13 @@ NativeWebSockets.prototype._send = function(message) {
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
   switch (this._socket.getReadyState()) {
-      case org.java_websocket.enums.getReadyState.NOT_YET_CONNECTED:
+      case org.java_websocket.enums.ReadyState.NOT_YET_CONNECTED:
           return this.NOT_YET_CONNECTED;
-      case org.java_websocket.enums.getReadyState.OPEN:
+      case org.java_websocket.enums.ReadyState.OPEN:
           return this.OPEN;
-      case org.java_websocket.enums.getReadyState.CLOSING:
+      case org.java_websocket.enums.ReadyState.CLOSING:
           return this.CLOSING;
-      case org.java_websocket.enums.getReadyState.CLOSED:
+      case org.java_websocket.enums.ReadyState.CLOSED:
           return this.CLOSED;
       default:
           throw new Error("getReadyState returned invalid value");
