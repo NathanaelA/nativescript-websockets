@@ -254,7 +254,7 @@ var NativeWebSockets = function(url, options) {
 
     this._browser = !!options.browser;
     this._timeout = options.timeout;
-    this._url = url.replace(/\s/g,'+');
+    this._url = url.replace(/\s/g,'%20');
 
     //noinspection JSUnresolvedVariable
     this._proxy = options.proxy;
