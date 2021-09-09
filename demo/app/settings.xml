@@ -1,3 +1,4 @@
+<!-- Version 2.00, (c) 2015-2021, Nathanael Anderson/Master Technology -->
 <Page shownModally="shownModally" loaded="loaded" actionBarHidden="true">
     <GridLayout row="1" columns="*,*,*,*" rows="auto,auto,auto,auto" cssClass="border">
         <Label row="0" colSpan="4" text="Settings" cssClass="title" />

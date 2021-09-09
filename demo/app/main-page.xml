@@ -1,7 +1,8 @@
+<!-- Version 2.00, (c) 2015-2021, Nathanael Anderson/Master Technology -->
 <Page id="page" loaded="pageLoaded"
-                        navigatedTo="navigatedTo"
-                        xmlns:tsd="nativescript-ui-sidedrawer"
-                        xmlns="http://www.nativescript.org/tns.xsd">
+      navigatedTo="navigatedTo"
+      xmlns:tsd="nativescript-ui-sidedrawer"
+      xmlns="http://www.nativescript.org/tns.xsd">
     <Page.actionBar>
 
         <ActionBar title="crossCommunicator">
@@ -18,7 +19,7 @@
                 <StackLayout height="1" backgroundColor="#c7c875"/>
                 <Label text="The websockets library on Android is Copyright (c) 2010-2012 Nathan Rajlich" textWrap="true"/>
                 <Label text="The websockets library on iOS is Copyright (c) 2014 Zwopple Limited" textWrap="true"/>
-                <Label text="The NativeScript websockets library is Copyright (c) 2015-2018 Master Technology" textWrap="true"/>
+                <Label text="The NativeScript websockets library is Copyright (c) 2015-2021, Master Technology" textWrap="true"/>
             </StackLayout>
         </tsd:RadSideDrawer.drawerContent>
         <tsd:RadSideDrawer.mainContent>

@@ -1,134 +1,153 @@
 /***********************************************************************************
- * (c) 2015, Nathanael Anderson
+ * (c) 2015-2021, Nathanael Anderson
  * Licensed under the MIT license
  *
- * Version 0.0.1                                       Nathan@master-technology.com
+ * Version 2.0.0                                           Nathan@master.technology
  **********************************************************************************/
 "use strict";
 
-var AJAXSocket = function() {
+// Please note this file isn't used by this demo,
+// but was described in my NativeScript book, so it is included so
+// those with the book will now have the updated class...
+// https://www.amazon.com/Getting-Started-NativeScript-Nathanael-Anderson-ebook/dp/B016YFQ82I
+
+class AJAXSocket {
+  constructor() {
     this._host = null;
     this._counter = 0;
-    this._clientId = Math.floor(Math.random()*100000);
-    this._from = "Unknown_"+this._clientId;
+    this._clientId = Math.floor(Math.random() * 100000);
+    this._from = "Unknown_" + this._clientId;
     this._messageHandler = [];
 
-    var self = this;
-    setInterval(function () {
-        self._handleListener();
+    setInterval(() => {
+      this._handleListener();
     }, 250);
 
-};
+  }
 
-AJAXSocket.prototype.setHost = function(host) {
-   this._host = "http://"+host + "/direct/";
-};
 
-AJAXSocket.prototype.getHost = function() {
-    return this._host.replace('http://','').replace('/direct/','');
-};
+  set host(host) {
+    this._host = "http://" + host + "/direct/";
+  }
 
-AJAXSocket.prototype.setName = function(name) {
+  get host() {
+    return this._host.replace('http://', '').replace('/direct/', '');
+  }
+
+  set name(name) {
     this._from = name;
-};
+  };
 
-AJAXSocket.prototype.getName = function() {
+  get name() {
     return this._from;
-};
+  };
 
-AJAXSocket.prototype.send = function(msg) {
-    if (!this._host) { return; }
-    var url = this._host + "send/";
-    if (this._clientId) {
-        url += "?clientId="+this._clientId;
+  send(msg) {
+    if (!this._host) {
+      return;
     }
-    var self = this;
+    let url = this._host + "send/";
+    if (this._clientId) {
+      url += "?clientId=" + this._clientId;
+    }
     console.log("Creating Request");
-    var request = new XMLHttpRequest();
-    request.onload = function() {
-        console.log("!-------- Finished Request", request.status);
-        try {
-            self._handler("send", request.responseText);
-        } catch (e) {
-            console.log("!------ Error", e);
-        }
+    const request = new XMLHttpRequest();
+    request.onload = () => {
+      console.log("!-------- Finished Request", request.status);
+      try {
+        this._handler("send", request.responseText);
+      } catch (e) {
+        console.log("!------ Error", e);
+      }
     };
-    request.onerror = function() {
-        console.log("!-------- Error", request.status);
+
+    request.onerror = () => {
+      console.log("!-------- Error", request.status);
     };
+
     msg.from = this._from;
     request.open("POST", url, true);
     request.send(encodeURI(JSON.stringify({from: this._from, message: msg})));
-    console.log("Sending Request",url, msg);
-};
+    console.log("Sending Request", url, msg);
+  }
 
-AJAXSocket.prototype._handleListener = function() {
-    if (!this._host) { return; }
-
-    var self = this;
-    this._counter++;
-    if (this._counter > 2) { return; }
-
-    var url = this._host + "get/";
-    if (this._clientId) {
-        url += "?clientId="+this._clientId;
+  _handleListener() {
+    if (!this._host) {
+      return;
     }
 
-    var request = new XMLHttpRequest();
-    request.onload = function() {
-        self._counter--;
-        self._handler("get", request.responseText);
-    };
-    request.onerror = function() {
-        self._counter--;
-        self._handler("error", request.status);
-    };
+    this._counter++;
+    if (this._counter > 2) {
+      return;
+    }
+
+    let url = this._host + "get/";
+    if (this._clientId) {
+      url += "?clientId=" + this._clientId;
+    }
+
+    const request = new XMLHttpRequest();
+    request.onload = () => {
+      this._counter--;
+      this._handler("get", request.responseText);
+    }
+
+    request.onerror = () => {
+      this._counter--;
+      this._handler("error", request.status);
+    }
+
 
     request.open("GET", url, true);
     request.send();
-};
+  };
 
-AJAXSocket.prototype._handler = function (event, result) {
-    if (!result) { return; }
-    var data = {};
+  _handler(event, result) {
+    if (!result) {
+      return;
+    }
+    let data = {};
     if (result.length > 0) {
-        try {
-            data = JSON.parse(result);
-        }
-        catch (e) { }
+      try {
+        data = JSON.parse(result);
+      } catch (e) {
+      }
     }
-    
+
     if (event === "get" || event === "send") {
-        if (data && data.clientId && this._clientId !== data.clientId) {
-            console.log("Setting our Client Id:", data.clientId);
-            this._clientId = data.clientId;
+      if (data && data.clientId && this._clientId !== data.clientId) {
+        console.log("Setting our Client Id:", data.clientId);
+        this._clientId = data.clientId;
+      }
+      for (let i = 0; i < data.messages.length; i++) {
+        let from = 3;
+        if (data.messages[i].from === "ME") {
+          continue;
         }
-        for (var i=0;i<data.messages.length;i++) {
-            var from = 3;
-            if (data.messages[i].from === "ME") { continue; }
-            if (data.messages[i].from === "SERVER") {
-                from = 2;
-            } else {
-                data.messages[i].message = data.messages[i].from +": " + data.messages[i].message;
-            }
+        if (data.messages[i].from === "SERVER") {
+          from = 2;
+        } else {
+          data.messages[i].message = data.messages[i].from + ": " + data.messages[i].message;
+        }
 
-            this._handleMessages({from: from, data: data.messages[i].message});
-        }
+        this._handleMessages({from: from, data: data.messages[i].message});
+      }
     } else if (event === "abort" || event === "error") {
-        this._handleMessages({from: 2, data: event});
+      this._handleMessages({from: 2, data: event});
     }
-};
+  };
 
-AJAXSocket.prototype._handleMessages = function(msg) {
-    for (var i=0;i<this._messageHandler.length;i++) {
-        this._messageHandler[i](msg);
+  _handleMessages(msg) {
+    for (let i = 0; i < this._messageHandler.length; i++) {
+      this._messageHandler[i](msg);
     }
-};
+  };
 
-AJAXSocket.prototype.on = function(eventName, fun) {
+  on(eventName, fun) {
     this._messageHandler.push(fun);
-};
-AJAXSocket.prototype.readyState = 1;
+  };
+}
+
 
 
 module.exports = AJAXSocket;

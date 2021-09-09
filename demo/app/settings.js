@@ -1,22 +1,22 @@
 /***********************************************************************************
- * (c) 2015, Nathanael Anderson
+ * (c) 2015-2021, Nathanael Anderson
  * Licensed under the MIT license
  *
- * Version 0.0.1                                       Nathan@master-technology.com
+ * Version 2.0.0                                           Nathan@master.technology
  **********************************************************************************/
 "use strict";
  /* global require, exports */
 
 /* Load the needed components */
-var appSettings = require('application-settings');
-var Observable = require("data/observable").Observable;
-var Dialog = require('ui/dialogs');
+const appSettings = require('@nativescript/core/application-settings');
+const Observable = require("@nativescript/core/data/observable").Observable;
+const Dialog = require('@nativescript/core/ui/dialogs');
 
 /* Setup our page variables */
-var page;
-var settings = new Observable();
-settings.set("name","");
-settings.set("server","");
+let page;
+const settings = new Observable();
+settings.set("name","Your Name");
+settings.set("server","nativescript.rocks:3000");
 
 /***
  * Setup our Page information and bindings
@@ -41,7 +41,7 @@ exports.shownModally= function() {
  */
 exports.save = function() {
     if (!checkFieldValue('name')) return;
-    if (!checkFieldValue('server'))return;
+    if (!checkFieldValue('server')) return;
 
     appSettings.setBoolean("setup", true);
     appSettings.setString("name", settings.get('name'));
@@ -60,8 +60,8 @@ exports.cancel = function() {
  * A simple error checking routine used for each field
  */
 function checkFieldValue(field) {
-    var fieldValue = settings.get(field);
-    var fieldId = page.getViewById(field);
+    const fieldValue = settings.get(field);
+    const fieldId = page.getViewById(field);
     if (!fieldValue) {
         Dialog.alert("The "+field+" can't be left blank.  Please fill in a value.");
         if (fieldId) {

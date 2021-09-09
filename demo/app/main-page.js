@@ -1,27 +1,27 @@
 /***********************************************************************************
- * (c) 2015-2018, Nathanael Anderson
+ * (c) 2015-2021, Nathanael Anderson
  * Licensed under the MIT license
  *
- * Version 0.0.2                                       Nathan@master-technology.com
+ * Version 2.0.0                                           Nathan@master.technology
  **********************************************************************************/
 "use strict";
 /* global require, exports */
 
 // Load the needed Components
-var appSettings = require('application-settings');
-var ObservableArray = require("data/observable-array").ObservableArray;
-var vibrate = require('nativescript-vibrate');
-var Socket = require("./WebSocketWrapper.js");
+const appSettings = require('@nativescript/core/application-settings');
+const ObservableArray = require("@nativescript/core/data/observable-array").ObservableArray;
+
+const Socket = require("./WebSocketWrapper");
 
 // Our cool message icons
-var messageIcons = ["",String.fromCharCode(0xE0C9),String.fromCharCode(0xE85A),String.fromCharCode(0xE0B9)];
+let messageIcons = ["",String.fromCharCode(0xE0C9),String.fromCharCode(0xE85A),String.fromCharCode(0xE0B9)];
 
 // Track our messages
-var messages = new ObservableArray();
+const messages = new ObservableArray();
 messages.on('change', trackMessages);
 
 // Global variables for simplicity
-var entry, scrollView, server, page, trackerCounter = null;
+let entry, scrollView, page, trackerCounter = null;
 
 // Sample Messages
 messages.push({from: 0, message: "Welcome to Cross Communicator", iconRight: '', iconLeft: ''});
@@ -33,7 +33,7 @@ messages.push({from: 1, message: "And this is me responding to it...", iconRight
 */
 
 // Create our communications socket
-var socket = new Socket();
+const socket = new Socket();
 
 /***
  * Attach to the message listener
@@ -58,19 +58,18 @@ function showDialog(force) {
 
 	if (!appSettings.getBoolean('setup', false) || force === true) {
 		page.showModal('settings', '', function() {
-			socket.setHost(appSettings.getString('server'));
-			socket.setName(appSettings.getString('name'));
+			socket.host = appSettings.getString('server');
+			socket.name = appSettings.getString('name');
 		}, false);
 	} else {
-		socket.setHost(appSettings.getString('server'));
-		socket.setName(appSettings.getString('name'));
+		socket.host = appSettings.getString('server');
+		socket.name = appSettings.getString('name');
 	}
-
 }
 
 /***
  * Track any messages changes
- * @param evt - the event that occured
+ * @param evt - the event that occurred
  */
 function trackMessages(evt) {
 	if (evt && evt.action && evt.action !== "add") { return; }
@@ -86,7 +85,7 @@ function trackMessages(evt) {
  */
 function resetMessageDisplay() {
 	trackerCounter = null;
-	var offset = scrollView.scrollableHeight;
+	const offset = scrollView.scrollableHeight;
 	scrollView.scrollToVerticalOffset(offset, false);
 }
 
@@ -103,11 +102,6 @@ function newMessage(msg) {
 		msg.iconRight = '';
 	}
 	messages.push(msg);
-
-	// Vibrate on new messages
-	if (msg.from !== 1) {
-		//   vibrate.vibration(100);
-	}
 }
 
 /***
@@ -115,7 +109,7 @@ function newMessage(msg) {
  */
 exports.goTap = function() {
 	if (entry.text.length > 0) {
-		var data = {from: 1, message: entry.text};
+		const data = {from: 1, message: entry.text};
 		entry.text = "";
 		newMessage(data);
 		sendMessage(data.message);

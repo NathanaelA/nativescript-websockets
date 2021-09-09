@@ -1,23 +1,12 @@
-/***********************************************************************************
- * (c) 2015-2018, Nathanael Anderson
- * Licensed under the MIT license
- *
- * Version 0.0.1                                       Nathan@master-technology.com
- **********************************************************************************/
-"use strict";
-/* global require, exports */
+/*
+In NativeScript, the app.js file is the entry point to your application.
+You can use this file to perform app-level initialization, but the primary
+purpose of the file is to pass control to the app’s first module.
+*/
 
-require("./bundle-config");
-var application = require("application");
-//application.mainModule = "main-page";
-//application.cssFile = "app.css";
+import { Application } from '@nativescript/core';
 
-if (application.ios) {
-	var fontModule = require("ui/styling/font");
-	fontModule.ios.registerFont("MaterialIcons-Regular.ttf");
-}
-
-application.start({ moduleName: "main-page" });
+Application.run({ moduleName: 'app-root' })
 
 /*
 Do not place any code after the application has been started as it will not
