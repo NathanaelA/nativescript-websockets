@@ -34,7 +34,7 @@ const WebSocketDelegate = NSObject.extend({
         if (this.debug) {
             console.log("WebSocket Event: URLSessionWebSocketTaskDidOpenWithProtocol");
         }
-        const webSocketInstance = this.wrapper?.get();
+        const webSocketInstance = this.wrapper?.get?.();
         if (!webSocketInstance) {
             return;
         }
@@ -57,7 +57,7 @@ const WebSocketDelegate = NSObject.extend({
         if (this.debug) {
             console.log("WebSocket Event: URLSessionWebSocketTaskDidCloseWithCodeReason", closeCode, reason);
         }
-        const webSocketInstance = this.wrapper?.get();
+        const webSocketInstance = this.wrapper?.get?.();
         if (!webSocketInstance) {
             return;
         }
@@ -69,6 +69,8 @@ const WebSocketDelegate = NSObject.extend({
     protocols: [NSURLSessionWebSocketDelegate, NSURLSessionDelegate]
 });
 
+// We have to keep a hard ref to the created socket, otherwise the class will disappear mid-use because of GC
+const webSockets = [];
 
 // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures,JSUnresolvedFunction
 class NativeWebSockets {
@@ -88,6 +90,8 @@ class NativeWebSockets {
         this.OPEN = 1;
         this.CLOSING = 2;
         this.CLOSED = 3;
+
+        webSockets.push(this);
 
         this._debug = !!options.debug;
         this._hasOpened = false;
@@ -117,7 +121,23 @@ class NativeWebSockets {
 
         this._headers = options.headers || [];
 
+        this.on("close", () => {
+            if (this._browser) {
+                this.unref();
+            }
+        });
+
         this._reCreate()
+    }
+
+    /**
+     * Used to remove the Hard Reference, so this instance can be GC'd
+     */
+    unref() {
+        let id = webSockets.indexOf(this);
+        if (id >= 0) {
+            webSockets.splice(id,1);
+        }
     }
 
     /**
@@ -191,7 +211,7 @@ class NativeWebSockets {
      * Attach an event to this webSocket
      * @param event {String} - Event Type ("message", "open", "close", "error")
      * @param callback {Function} - the function to run on the event
-     * @param thisArg {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
+     * @param thisArg? {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
      */
     on(event, callback, thisArg) {
         this.addEventListener(event, callback, thisArg);
@@ -201,7 +221,7 @@ class NativeWebSockets {
      * Detaches an event from this websocket
      * If no callback is provided all events are cleared of that type.
      * @param event {String} - Event to detach from
-     * @param callback {Function} - the function you registered
+     * @param callback? {Function} - the function you registered
      */
     off(event, callback) {
         this.removeEventListener(event, callback);
@@ -211,7 +231,7 @@ class NativeWebSockets {
      * Attach an event to this websocket
      * @param event {string} - Event Type ("message", "open", "close", "error")
      * @param callback {Function} - the function to run on the event
-     * @param thisArg {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
+     * @param thisArg? {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
      */
     addEventListener(event, callback, thisArg ) {
         if (!Array.isArray(this._callbacks[event])) {
@@ -224,7 +244,7 @@ class NativeWebSockets {
      * Detaches an event from this webSocket
      * If no callback is provided all events are cleared of that type.
      * @param event {string} - Event to detach from
-     * @param callback {Function} - the function you registered
+     * @param callback? {Function} - the function you registered
      */
     removeEventListener(event, callback) {
         if (!Array.isArray(this._callbacks[event])) {

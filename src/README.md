@@ -65,6 +65,8 @@ mySocket.on('message', function(socket, message) { console.log("Got a message", 
 mySocket.on('close', function(socket, code, reason) { console.log("Socket was closed because: ", reason, " code: ", code); });
 mySocket.on('error', function(socket, error) { console.log("Socket had an error", error);});
 
+// When all done with the socket, if you want to clear its memory do
+mySocket.unref();
 ```
 
 ### Browser Based WebSockets
@@ -113,9 +115,12 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 ##### Notes: in the Advanced WebSocket you can re-open a closed WebSocket...
 
 
-
-
 ### Common Functions between Advanced and Browser WebSockets
+
+#### Clears the memory used by the websocket
+#### .unref()
+Do to the way GC works, we have to keep a hard reference so that your websocket doesn't disappear mid-use. We automatically call this function on close of browser based websockets.  On advanced sockets because you can reopen them again, you are responsible to call this when you are totally done with the socket.
+
 
 #### Closes the open Socket
 #### .close(code, reason)
@@ -135,6 +140,7 @@ The Advanced WebSockets allow you a lot more control over setting up and creatin
 * 1 - Open
 * 2 - Closing
 * 3 - Closed
+
 
 #### The URL you opened
 #### .url

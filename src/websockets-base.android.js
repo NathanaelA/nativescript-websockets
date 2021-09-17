@@ -37,7 +37,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: OnOpen");
         }
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (wrapper) {
             wrapper._notify("open", [wrapper]);
         }
@@ -47,7 +47,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: OnClose", code, reason);
         }
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (wrapper) {
             // org.java_websocket.WebSocketImpl.closeConnection() currently executes this callback prior to updating readystate to CLOSED
             // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
@@ -58,9 +58,11 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             setTimeout(() => {
                 if (wrapper) {
                     wrapper._notify('close', [wrapper, code, reason])
-                    this.wrapper = null;  // Clean up memory
                 }
+                this.wrapper = null;  // Clean up memory
             }, 1);
+        } else {
+            this.wrapper = null;
         }
     },
 
@@ -74,7 +76,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             return;
         }
 
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         // Should be a JavaScript String or ArrayBuffer
         if (wrapper) {
             wrapper._notify("message", [wrapper, message]);
@@ -86,7 +88,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: OnMessageBinary");
         }
 
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (wrapper && binaryMessage) {
 
             // Is a Native JAVA Buffer type
@@ -124,7 +126,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: onError", err);
         }
 
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (wrapper) {
             wrapper._notify("error", [wrapper, err]);
         }
@@ -136,7 +138,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: onFragment", optCode);
         }
 
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (!wrapper) {
             return;
         }
@@ -193,7 +195,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: Handshake Received", handshake);
         }
-        const wrapper = this.wrapper?.get();
+        const wrapper = this.wrapper?.get?.();
         if (wrapper) {
             wrapper._notify("handshake", [wrapper, handshake]);
         }
@@ -206,6 +208,9 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         }
     }
 });
+
+// We have to keep a hard ref to the created socket, otherwise the class will disappear mid-use because of GC
+const webSockets = [];
 
 // noinspection JSUnresolvedFunction,DuplicatedCode,JSUnusedGlobalSymbols
 class NativeWebSockets {
@@ -225,6 +230,8 @@ class NativeWebSockets {
         this.OPEN = 1;
         this.CLOSING = 2;
         this.CLOSED = 3;
+
+        webSockets.push(this);
 
         this._callbacks = {
             open: [],
@@ -260,8 +267,24 @@ class NativeWebSockets {
             org.java_websocket.WebSocketImpl.DEBUG = true;
         }
 
+        this.on("close", () => {
+            if (this._browser) {
+                this.unref();
+            }
+        });
+
         this._reCreate();
     };
+
+    /**
+     * Used to remove the Hard Reference, so this instance can be GC'd
+     */
+    unref() {
+        let id = webSockets.indexOf(this);
+        if (id >= 0) {
+            webSockets.splice(id,1);
+        }
+    }
 
     /**
      * This function is used to open and re-open sockets so that you don't have to re-create a whole new websocket class
@@ -367,7 +390,7 @@ class NativeWebSockets {
      * Attach an event to this webSocket
      * @param event {String} - Event Type ("message", "open", "close", "error")
      * @param callback {Function} - the function to run on the event
-     * @param thisArg {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
+     * @param thisArg? {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
      */
     on(event, callback, thisArg) {
         this.addEventListener(event, callback, thisArg);
@@ -377,7 +400,7 @@ class NativeWebSockets {
      * Detaches an event from this websocket
      * If no callback is provided all events are cleared of that type.
      * @param event {String} - Event to detach from
-     * @param callback {Function} - the function you registered
+     * @param callback? {Function} - the function you registered
      */
     off(event, callback) {
         this.removeEventListener(event, callback);
@@ -387,7 +410,7 @@ class NativeWebSockets {
      * Attach an event to this webSocket
      * @param event {String} - Event Type ("message", "open", "close", "error")
      * @param callback {Function} - the function to run on the event
-     * @param thisArg {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
+     * @param thisArg? {Object} - the "this" to use for calling your function, defaults to this current webSocket "this"
      */
     addEventListener(event, callback, thisArg) {
         if (!Array.isArray(this._callbacks[event])) {
@@ -400,7 +423,7 @@ class NativeWebSockets {
      * Detaches an event from this webSocket
      * If no callback is provided all events are cleared of that type.
      * @param event {String} - Event to detach from
-     * @param callback {Function} - the function you registered
+     * @param callback? {Function} - the function you registered
      */
     removeEventListener(event, callback) {
         if (!Array.isArray(this._callbacks[event])) {
