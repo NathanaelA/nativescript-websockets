@@ -48,18 +48,12 @@ class BrowserWebSocketsEvent {
         return true;
     }
 
-    get timeStamp() {
-        return this._timeStamp;
-    }
-
     constructor(values) {
-        this._timeStamp = Date.now();
-        Object.defineProperty(this, "_timeStamp", {enumerable: false});
+        this.timestamp = Date.now();
 
         for (let key in values) {
             if (values.hasOwnProperty(key)) {
                 this[key] = values[key];
-                Object.defineProperty(this, key, {enumerable: true});
             }
         }
     }
@@ -116,18 +110,6 @@ class BrowserWebSockets extends NativeWebSockets {
         this.onerror = null;
         this.onmessage = null;
         this.onopen = null;
-
-        // To make the WS look like a normal Browser webSocket, we hide all the internal private variables
-        Object.defineProperty(this, "_notify", {enumerable: false});
-        Object.defineProperty(this, "_callbacks", {enumerable: false});
-        Object.defineProperty(this, "_protocol", {enumerable: false});
-        Object.defineProperty(this, "_browser", {enumerable: false});
-        Object.defineProperty(this, "_socket", {enumerable: false});
-        Object.defineProperty(this, "_url", {enumerable: false});
-        Object.defineProperty(this, "_hasOpened", {enumerable: false});
-        Object.defineProperty(this, "_timeout", {enumerable: false});
-        Object.defineProperty(this, "_proxy", {enumerable: false});
-        Object.defineProperty(this, "_callEventCallbacks", {enumerable: false});
 
         // We have to open this WS automatically, BUT we want this to fire after the rest of the users code does so that the user can attach his events
         setTimeout( () => {
