@@ -1,6 +1,6 @@
 {
-  "name": "@master.technology/websockets",
-  "version": "2.0.3",
+  "name": "@tremho/mt-ns-websockets",
+  "version": "2.0.4-pre-release.1",
   "description": "A WebSocket NativeScript module for Android and iOS",
   "main": "websockets",
   "nativescript": {
@@ -62,6 +62,5 @@
       "type" : "patreon",
       "url" : "https://www.patreon.com/NathanaelA"
     }
-  ],
-  "publishConfig": { "access": "public" }
+  ]
 }
