@@ -361,7 +361,7 @@ class NativeWebSockets {
      * @private
      */
     _send(message) {
-        const nsMsg = NSURLSessionWebSocketMessage.alloc().initWithString(message);
+        const nsMsg = message instanceof ArrayBuffer ? NSURLSessionWebSocketMessage.alloc().initWithData(message) : NSURLSessionWebSocketMessage.alloc().initWithString(message);
 
         // this._nsWebSocketTask
         NSURLSessionWebSocketTask.prototype.sendMessageCompletionHandler.apply(this._nsWebSocketTask, [
