@@ -1,6 +1,6 @@
 {
   "name": "@master.technology/websockets",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A WebSocket NativeScript module for Android and iOS",
   "main": "websockets",
   "nativescript": {

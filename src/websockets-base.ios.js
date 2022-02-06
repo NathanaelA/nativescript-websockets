@@ -158,7 +158,7 @@ class NativeWebSockets {
         }
 
         if (this._timeout !== -1) {
-            urlRequest.timeoutInterval = this._timeout;
+            urlRequest.timeoutInterval = this._timeout / 1000; // Convert to seconds for NSURLRequest. This honors the API spec for timeout cross-platform.
         }
 
         this._webSocketDelegate = WebSocketDelegate.alloc().init();
