@@ -190,7 +190,7 @@ class NativeWebSockets {
     _callEventCallbacks(self, callback, data) {
         // https://github.com/NativeScript/NativeScript/issues/1673#issuecomment-190658780
         Promise.resolve().then(() => {
-            callback.apply(self, data);
+            callback.apply(self, [data]);
         });
     }
 
