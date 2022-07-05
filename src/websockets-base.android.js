@@ -383,7 +383,7 @@ class NativeWebSockets {
      * @private
      */
     _callEventCallbacks(self, callback, data) {
-        callback.apply(self, data);
+        callback.apply(self, [data]);
     }
 
     /**
