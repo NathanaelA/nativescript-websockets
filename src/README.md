@@ -2,6 +2,9 @@
 [![npm](https://img.shields.io/npm/l/@master.technology/websockets.svg)](https://www.npmjs.com/package/@master.technology/websockets)
 [![npm](https://img.shields.io/npm/dt/@master.technology/websockets.svg?label=npm%20d%2fls)](https://www.npmjs.com/package/@master.technology/websockets)
 
+# Depreciated
+See: https://fluentreports.com/blog/?p=1434
+
 
 # NativeScript WebSockets
 
