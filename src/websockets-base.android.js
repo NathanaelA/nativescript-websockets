@@ -37,7 +37,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: OnOpen");
         }
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (wrapper) {
             wrapper._notify("open", [wrapper]);
         }
@@ -47,7 +47,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: OnClose", code, reason);
         }
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (wrapper) {
             // org.java_websocket.WebSocketImpl.closeConnection() currently executes this callback prior to updating readystate to CLOSED
             // and as such there are cases when the readystate is still showing as OPEN when this called. In short, the websocket connection
@@ -76,7 +76,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             return;
         }
 
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         // Should be a JavaScript String or ArrayBuffer
         if (wrapper) {
             wrapper._notify("message", [wrapper, message]);
@@ -88,7 +88,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: OnMessageBinary");
         }
 
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (wrapper && binaryMessage) {
 
             // Is a Native JAVA Buffer type
@@ -126,7 +126,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: onError", err);
         }
 
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (wrapper) {
             wrapper._notify("error", [wrapper, err]);
         }
@@ -138,7 +138,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
             console.log("WebSocket Event: onFragment", optCode);
         }
 
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (!wrapper) {
             return;
         }
@@ -195,7 +195,7 @@ const _WebSocket = org.java_websocket.client.WebSocketClient.extend( {
         if (this.debug) {
             console.log("WebSocket Event: Handshake Received", handshake);
         }
-        const wrapper = this.wrapper?.get?.();
+        const wrapper = this.wrapper && this.wrapper.get && this.wrapper.get()
         if (wrapper) {
             wrapper._notify("handshake", [wrapper, handshake]);
         }
@@ -677,21 +677,27 @@ class NativeWebSockets {
         return true;
     }
 
-    /**
-     * This is a list standardized Close Codes
-     */
-    static CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, SERVICE_RESTART: 1012, TRY_AGAIN_LATER: 1013, BAD_GATEWAY: 1014, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
-
-    /**
-     * Standard Connection values
-     * @type {number}
-     */
-    static NOT_YET_CONNECTED = -1;
-    static CONNECTING = 0;
-    static OPEN = 1;
-    static CLOSING = 2;
-    static CLOSED = 3;
+    // /**
+    //  * This is a list standardized Close Codes
+    //  */
+    // static CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, SERVICE_RESTART: 1012, TRY_AGAIN_LATER: 1013, BAD_GATEWAY: 1014, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
+    //
+    // /**
+    //  * Standard Connection values
+    //  * @type {number}
+    //  */
+    // static NOT_YET_CONNECTED = -1;
+    // static CONNECTING = 0;
+    // static OPEN = 1;
+    // static CLOSING = 2;
+    // static CLOSED = 3;
 }
+NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1002, REFUSE: 1003, NOCODE: 1005, ABNORMAL_CLOSE:1006, NO_UTF8: 1007, POLICY_VALIDATION: 1008, TOOBIG: 1009, EXTENSION: 1010, UNEXPECTED_CONDITION: 1011, SERVICE_RESTART: 1012, TRY_AGAIN_LATER: 1013, BAD_GATEWAY: 1014, TLS_ERROR: 1015, NEVER_CONNECTED: -1, BUGGYCLOSE: -2, FLASHPOLICY: -3};
+NativeWebSockets.NOT_YET_CONNECTED = -1;
+NativeWebSockets.CONNECTING = 0;
+NativeWebSockets.OPEN = 1;
+NativeWebSockets.CLOSING = 2;
+NativeWebSockets.CLOSED = 3;
 
 module.exports = NativeWebSockets;
 
